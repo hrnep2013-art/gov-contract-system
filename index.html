@@ -137,19 +137,19 @@
     }
 
     .doc-fill {
-      border-bottom: 1px dotted #334155;
-      padding: 0 4px;
-      font-weight: 600;
-      color: #000080;
+      border-bottom: 1px dotted #94A3B8;
+      padding: 0 3px;
+      font-weight: 500;
+      color: #0F172A;
       display: inline;
       white-space: nowrap;
     }
 
     .doc-fill-wrap {
-      border-bottom: 1px dotted #334155;
-      padding: 0 4px;
-      font-weight: 600;
-      color: #000080;
+      border-bottom: 1px dotted #94A3B8;
+      padding: 0 3px;
+      font-weight: 500;
+      color: #0F172A;
       display: inline;
     }
 
@@ -218,7 +218,7 @@
 
       .doc-fill, .doc-fill-wrap {
         color: #000000 !important;
-        border-bottom: 1px dotted #475569 !important;
+        border-bottom: 1px dotted #94A3B8 !important;
       }
     }
   </style>
@@ -525,6 +525,15 @@
                 (รอระบุตัวเลขค่าตอบแทน)
               </div>
             </div>
+          </div>
+
+          <!-- หน้าที่ความรับผิดชอบ (เอกสารแนบท้าย ผนวก ก. ข้อ ๒) -->
+          <div class="pt-2 border-t border-slate-100">
+            <label for="annexResponsibility" class="form-label">
+              หน้าที่ความรับผิดชอบ (เอกสารแนบท้าย ผนวก ก. ข้อ ๒)
+              <span class="text-xs font-normal text-slate-500">(พิมพ์ระบุหน้าที่ความรับผิดชอบเองได้ หรือเว้นว่างไว้เพื่อแสดงเส้นจุดไข่ปลา ๓ บรรทัดตามแบบฟอร์ม)</span>
+            </label>
+            <textarea id="annexResponsibility" rows="2" class="form-textarea text-sm" placeholder="ระบุภาระงานและหน้าที่ความรับผิดชอบ (หากเว้นว่างไว้ ระบบจะแสดงแถวเส้นจุดไข่ปลา ๓ บรรทัด สำหรับใช้เขียนหรือพิมพ์เพิ่มเติม)"></textarea>
           </div>
         </div>
       </section>
@@ -1028,51 +1037,57 @@
         </article>
 
         <!-- PAGE 4: เอกสารแนบท้ายสัญญาจ้าง ผนวก ก. และ ผนวก ข. (บีบช่องไฟบรรทัดให้กระชับ ไม่ล้นหน้าสุดท้าย) -->
-        <article class="a4-page a4-page-standardized" style="line-height: 1.28; padding-top: 14mm; padding-bottom: 14mm;">
-          <div class="text-center font-bold mb-2">
+        <article class="a4-page a4-page-standardized" style="line-height: 1.25; padding-top: 12mm; padding-bottom: 12mm;">
+          <div class="text-center font-bold mb-1.5">
             <div class="text-[14.5pt] leading-tight">เอกสารแนบท้ายสัญญาจ้าง</div>
             <div class="text-[13.5pt] leading-tight">ผนวก ก.</div>
-            <div class="w-36 border-b border-black mx-auto my-1"></div>
+            <div class="w-36 border-b border-black mx-auto my-0.5"></div>
             <div class="text-[14.5pt] leading-tight">หน้าที่ความรับผิดชอบของพนักงานราชการ</div>
           </div>
 
-          <p class="mb-1">
+          <p class="mb-0.5">
             <span class="font-bold">๑. พนักงานราชการพิเศษ</span> (ให้ระบุขอบเขตของลักษณะการปฏิบัติงาน ระยะเวลา ผลผลิต หรือวิธีปฏิบัติงานกรณีอื่นที่แสดงให้เห็นผลสำเร็จของงาน)
           </p>
-          <p class="pl-8 mb-1.5 text-slate-800" id="annexASpecialText">- ไม่มี -</p>
+          <p class="pl-8 mb-1 text-slate-800 text-[13.5pt]" id="annexASpecialText">- ไม่มี -</p>
 
-          <p class="mb-1">
+          <p class="mb-0.5">
             <span class="font-bold">๒. พนักงานราชการทั่วไป</span> (ให้ระบุหน้าที่ความรับผิดชอบหรือผลผลิตตามระยะเวลา)
           </p>
-          <p class="pl-8 mb-2" id="annexAGeneralText">
-            ปฏิบัติงานในตำแหน่ง <span class="doc-fill-wrap" id="annexAPosition">....................</span>
-            กลุ่มงาน <span class="doc-fill-wrap" id="annexAGroup">....................</span>
-            สังกัด <span class="doc-fill-wrap" id="annexADivision">....................</span>
-            ตามมาตรฐานกำหนดตำแหน่งและภาระงานที่ส่วนราชการมอบหมาย
-          </p>
+          <div id="annexAGeneralContent" class="pl-8 mb-1.5 text-[13.5pt]">
+            <div id="annexAGeneralText" class="doc-fill-wrap leading-normal">
+              ปฏิบัติงานในตำแหน่ง <span id="annexAPosition">....................</span>
+              กลุ่มงาน <span id="annexAGroup">....................</span>
+              สังกัด <span id="annexADivision">....................</span>
+            </div>
+            <div id="annexCustomDutiesBox" class="mt-1 space-y-0.5">
+              <div class="text-slate-400 font-mono tracking-widest text-[10.5pt] overflow-hidden whitespace-nowrap select-none">..................................................................................................................................................................................................................................</div>
+              <div class="text-slate-400 font-mono tracking-widest text-[10.5pt] overflow-hidden whitespace-nowrap select-none">..................................................................................................................................................................................................................................</div>
+              <div class="text-slate-400 font-mono tracking-widest text-[10.5pt] overflow-hidden whitespace-nowrap select-none">..................................................................................................................................................................................................................................</div>
+            </div>
+          </div>
 
-          <div class="mb-3">
+          <div class="mb-2">
             <p class="font-bold underline mb-0.5">หมายเหตุ</p>
-            <p class="doc-indent mb-1">
+            <p class="doc-indent mb-0.5">
               ๑. ในกรณีที่กรม/สำนักงานได้กำหนดรายละเอียดมาตรฐานทั่วไปของงานในตำแหน่งใดไว้แล้ว อาจกำหนดหน้าที่ความรับผิดชอบของพนักงานราชการให้ปฏิบัติตามที่กรม/สำนักงานกำหนดไว้สำหรับตำแหน่งนั้นก็ได้
             </p>
-            <p class="doc-indent mb-1">
+            <p class="doc-indent mb-0.5">
               ๒. ในกรณีจำเป็นเพื่อประโยชน์ของทางราชการ กรม/สำนักงานอาจมีคำสั่งมอบหมายงานให้พนักงานราชการปฏิบัติเป็นพิเศษนอกเหนือจากขอบเขตหน้าที่ความรับผิดชอบที่กำหนดไว้ได้ โดยไม่ต้องแก้ไขสัญญา และพนักงานราชการยินยอมปฏิบัติตามคำสั่งของกรม/สำนักงาน โดยถือเป็นการกำหนดหน้าที่ความรับผิดชอบตามสัญญานี้
             </p>
           </div>
 
-          <hr class="border-t border-slate-400 my-3">
+          <hr class="border-t border-slate-400 my-2">
 
-          <div class="text-center font-bold mb-2">
+          <div class="text-center font-bold mb-1.5">
             <div class="text-[14.5pt] leading-tight">เอกสารแนบท้ายสัญญาจ้าง</div>
             <div class="text-[13.5pt] leading-tight">ผนวก ข.</div>
-            <div class="w-36 border-b border-black mx-auto my-1"></div>
+            <div class="w-36 border-b border-black mx-auto my-0.5"></div>
             <div class="text-[14.5pt] leading-tight">กำหนดระยะเวลาการมาปฏิบัติหน้าที่</div>
           </div>
 
-          <div class="mb-2">
+          <div class="mb-1.5">
             <p class="font-bold mb-0.5">๑. พนักงานราชการพิเศษ</p>
-            <div class="pl-10 space-y-0.5">
+            <div class="pl-10 space-y-0.5 text-[13.5pt]">
               <div><span class="doc-checkbox" id="chkAnnexBSpecNormal"></span> ปฏิบัติงานตามเวลาการปฏิบัติราชการปกติ</div>
               <div><span class="doc-checkbox"></span> ปฏิบัติงานตามระยะเวลา ดังนี้ ........................................................................</div>
               <div><span class="doc-checkbox"></span> ปฏิบัติงานตามผลผลิตของงาน ดังนี้ ..................................................................</div>
@@ -1080,9 +1095,9 @@
             </div>
           </div>
 
-          <div class="mb-2">
+          <div class="mb-1.5">
             <p class="font-bold mb-0.5">๒. พนักงานราชการทั่วไป</p>
-            <div class="pl-10 space-y-0.5">
+            <div class="pl-10 space-y-0.5 text-[13.5pt]">
               <div><span class="doc-checkbox" id="chkAnnexBGenNormal">✓</span> ปฏิบัติงานตามเวลาการปฏิบัติราชการปกติ</div>
               <div><span class="doc-checkbox"></span> ปฏิบัติงานตามระยะเวลา ดังนี้ ........................................................................</div>
               <div><span class="doc-checkbox"></span> อื่น ๆ ..........................................................................................................</div>
@@ -2160,6 +2175,26 @@ function doGet(e) {
       document.getElementById('annexAPosition').textContent = fmtThai(positionTitle);
       document.getElementById('annexAGroup').textContent = fmtThai(jobGroup);
       document.getElementById('annexADivision').textContent = fmtThai(divisionName);
+
+      const customDutiesEl = document.getElementById('annexResponsibility');
+      const customDuties = customDutiesEl ? customDutiesEl.value.trim() : '';
+      const dutiesBox = document.getElementById('annexCustomDutiesBox');
+      const dotPattern = '..................................................................................................................................................................................................................................';
+      if (dutiesBox) {
+        if (customDuties) {
+          dutiesBox.innerHTML = `
+            <div class="doc-fill-wrap leading-normal mb-1">${fmtThai(customDuties)}</div>
+            <div class="text-slate-400 font-mono tracking-widest text-[10.5pt] overflow-hidden whitespace-nowrap select-none">${dotPattern}</div>
+            <div class="text-slate-400 font-mono tracking-widest text-[10.5pt] overflow-hidden whitespace-nowrap select-none">${dotPattern}</div>
+          `;
+        } else {
+          dutiesBox.innerHTML = `
+            <div class="text-slate-400 font-mono tracking-widest text-[10.5pt] overflow-hidden whitespace-nowrap select-none">${dotPattern}</div>
+            <div class="text-slate-400 font-mono tracking-widest text-[10.5pt] overflow-hidden whitespace-nowrap select-none">${dotPattern}</div>
+            <div class="text-slate-400 font-mono tracking-widest text-[10.5pt] overflow-hidden whitespace-nowrap select-none">${dotPattern}</div>
+          `;
+        }
+      }
 
       // ข้อ ๓: คำนวณ ปี เดือน วัน อัตโนมัติ
       const dur = calculateContractDuration(newStartDateIso, newEndDateIso);
