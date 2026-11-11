@@ -92,12 +92,7 @@
       margin-left: 2px;
     }
 
-    /* ==========================================================
-       A4 Document Preview Styling
-       - ฟอนต์ TH SarabunPSK
-       - กั้นหน้า (ซ้าย) 2.0 ซม. / กั้นหลัง (ขวา) 1.5 ซม.
-       - ตัดคำภาษาไทยและจัดย่อหน้าให้สวยงามอ่านง่าย
-       ========================================================== */
+    /* A4 Document Preview Styling */
     .a4-page {
       width: 210mm;
       min-height: 297mm;
@@ -116,7 +111,7 @@
       hyphens: none;
     }
 
-    /* Fallback scale when rendered with Google Font Sarabun (which has larger glyph metrics than TH SarabunPSK) */
+    /* Fallback scale when rendered with Google Font Sarabun */
     @supports not (font-family: "TH SarabunPSK") {
       .a4-page {
         font-size: 13.5pt;
@@ -227,7 +222,7 @@
       }
     }
   </style>
-</head>
+<style data-link-removed-style>a[data-link-removed],a[href*="zPythonSafez"]:not([onclick]){pointer-events:none!important;cursor:default!important;opacity:.6}</style></head>
 <body class="min-h-screen flex flex-col">
 
   <!-- Top Official Header Bar (Hidden on Print) -->
@@ -243,7 +238,7 @@
               ระเบียบสำนักนายกรัฐมนตรีฯ พ.ศ. ๒๕๔๗
             </span>
             <span class="text-xs text-blue-200">
-              ฟอนต์ TH SarabunPSK • เลขไทยทั้งหมด • กั้นหน้า ๒ ซม. หลัง ๑.๕ ซม.
+              วันนำหน้า • ปี พ.ศ. ทุกช่อง • ฟอนต์ TH SarabunPSK • เลขไทย ๑๐๐%
             </span>
           </div>
           <h1 class="text-xl sm:text-2xl font-bold tracking-tight mt-0.5">
@@ -274,13 +269,20 @@
   <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6">
 
     <!-- Mode Switch Tabs (Hidden on Print) -->
-    <div class="no-print mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
-      <div class="flex items-center gap-2">
+    <div class="no-print mb-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+      <div class="flex flex-wrap items-center gap-2">
         <button type="button" id="tabFormBtn" class="px-4 py-2 rounded-lg text-sm font-semibold bg-brand-navy text-white shadow-sm transition cursor-pointer">
           1. กรอกข้อมูลคำร้องและสัญญาจ้าง
         </button>
         <button type="button" id="tabPreviewBtn" class="px-4 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-100 transition cursor-pointer">
           2. หน้าแสดงตัวอย่างและสั่งพิมพ์ (A4)
+        </button>
+        <button type="button" id="tabAdminBtn" class="px-4 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-100 transition cursor-pointer inline-flex items-center gap-2">
+          <svg class="w-4 h-4 text-brand-blue" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+          </svg>
+          <span>3. ระบบผู้ดูแล (Admin Dashboard & Google Sheets)</span>
+          <span id="adminTotalBadge" class="px-2 py-0.5 text-xs rounded-full bg-blue-100 text-brand-navy font-bold">0</span>
         </button>
       </div>
       <div id="statusIndicator" class="text-xs sm:text-sm text-slate-600 flex items-center gap-2 px-2">
@@ -348,14 +350,24 @@
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-12 gap-4">
-            <!-- วันเดือนปีเกิด -->
-            <div class="sm:col-span-4">
-              <label for="birthDate" class="form-label">วันเดือนปีเกิด <span class="required-dot">*</span></label>
-              <input type="date" id="birthDate" class="form-input" required>
+            <!-- วันเดือนปีเกิด (วัน เดือน ปี พ.ศ.) -->
+            <div class="sm:col-span-6">
+              <label class="form-label">วันเดือนปีเกิด (วัน / เดือน / ปี พ.ศ.) <span class="required-dot">*</span></label>
+              <div class="grid grid-cols-3 gap-2">
+                <select id="birthDateDay" class="form-select bg-white" required>
+                  <option value="">วัน</option>
+                </select>
+                <select id="birthDateMonth" class="form-select bg-white" required>
+                  <option value="">เดือน</option>
+                </select>
+                <select id="birthDateYear" class="form-select bg-white" required>
+                  <option value="">ปี พ.ศ.</option>
+                </select>
+              </div>
               <p class="text-xs text-brand-blue font-medium mt-1" id="birthDateThaiPreview">รูปแบบราชการ: -</p>
             </div>
 
-            <!-- อายุ (คำนวณอัตโนมัติหรือปรับแก้ได้) -->
+            <!-- อายุ -->
             <div class="sm:col-span-2">
               <label for="ageYears" class="form-label">อายุ (ปี) <span class="required-dot">*</span></label>
               <input type="number" id="ageYears" min="18" max="80" class="form-input" placeholder="เช่น 31" required>
@@ -363,13 +375,13 @@
             </div>
 
             <!-- เบอร์โทรศัพท์ -->
-            <div class="sm:col-span-3">
+            <div class="sm:col-span-2">
               <label for="phone" class="form-label">เบอร์โทรศัพท์ <span class="required-dot">*</span></label>
               <input type="tel" id="phone" class="form-input" placeholder="เช่น 089-456-7890" required>
             </div>
 
             <!-- อีเมล -->
-            <div class="sm:col-span-3">
+            <div class="sm:col-span-2">
               <label for="email" class="form-label">อีเมล <span class="required-dot">*</span></label>
               <input type="email" id="email" class="form-input" placeholder="name@dep.go.th" required>
             </div>
@@ -415,14 +427,14 @@
         </div>
       </section>
 
-      <!-- ส่วนที่ 2: ข้อมูลการจ้างงาน (นำช่องเลขที่ตำแหน่งออก และให้เพิ่มตำแหน่งเองได้อิสระ) -->
+      <!-- ส่วนที่ 2: ข้อมูลการจ้างงาน (เปลี่ยนเป็น 1. สำนัก/กอง และ 2. หน่วยงาน ตามตัวเลือกที่กำหนดเท่านั้น) -->
       <section class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div class="bg-brand-slate text-white px-5 py-3.5 flex items-center justify-between">
           <div class="flex items-center gap-2.5">
             <span class="w-7 h-7 rounded-full bg-brand-amber text-slate-950 font-bold text-sm flex items-center justify-center">2</span>
             <div>
               <h2 class="text-base sm:text-lg font-bold">ส่วนที่ 2: ข้อมูลการจ้างงานและอัตราค่าตอบแทน</h2>
-              <p class="text-xs text-slate-200">สังกัดส่วนราชการ ประเภทพนักงานราชการ กลุ่มงาน ตำแหน่ง และค่าตอบแทน</p>
+              <p class="text-xs text-slate-200">เลือกสำนัก/กอง (7 กอง) และหน่วยงานย่อยตามโครงสร้างกรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ</p>
             </div>
           </div>
           <span class="text-xs bg-white/15 px-2.5 py-1 rounded-full">ข้อ ๑ และ ข้อ ๔ ของสัญญา</span>
@@ -430,16 +442,33 @@
 
         <div class="p-5 sm:p-6 space-y-5">
           <div class="grid grid-cols-1 sm:grid-cols-12 gap-4">
-            <!-- ชื่อหน่วยงาน/ส่วนราชการ -->
-            <div class="sm:col-span-6">
-              <label for="departmentName" class="form-label">ชื่อหน่วยงาน/ส่วนราชการ <span class="required-dot">*</span></label>
-              <input type="text" id="departmentName" class="form-input" placeholder="เช่น กรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ" required>
+            <!-- ชื่อกรม/ส่วนราชการ -->
+            <div class="sm:col-span-12">
+              <label for="departmentName" class="form-label">ชื่อส่วนราชการ (กรม) <span class="required-dot">*</span></label>
+              <input type="text" id="departmentName" class="form-input bg-slate-50 font-semibold text-brand-navy" value="กรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ" required>
             </div>
 
-            <!-- กอง/สำนัก -->
+            <!-- 1. สำนัก/กอง (Dropdown 7 กองตามที่กำหนดเท่านั้น) -->
             <div class="sm:col-span-6">
-              <label for="divisionName" class="form-label">กอง/สำนัก/กลุ่ม <span class="required-dot">*</span></label>
-              <input type="text" id="divisionName" class="form-input" placeholder="เช่น กองบริหารทรัพยากรบุคคล / สำนักงานเลขานุการกรม" required>
+              <label for="bureauSelect" class="form-label">1. สำนัก/กอง <span class="required-dot">*</span></label>
+              <select id="bureauSelect" class="form-select bg-white" required>
+                <option value="">-- เลือกสำนัก/กอง (7 กอง) --</option>
+                <option value="กลุ่มตรวจสอบภายใน">1. กลุ่มตรวจสอบภายใน</option>
+                <option value="กลุ่มพัฒนาระบบบริหาร">2. กลุ่มพัฒนาระบบบริหาร</option>
+                <option value="สำนักงานเลขานุการกรม">3. สำนักงานเลขานุการกรม</option>
+                <option value="กองกองทุนและส่งเสริมความเสมอภาคคนพิการ">4. กองกองทุนและส่งเสริมความเสมอภาคคนพิการ</option>
+                <option value="กองคุ้มครองสวัสดิภาพและพัฒนาคนพิการ">5. กองคุ้มครองสวัสดิภาพและพัฒนาคนพิการ</option>
+                <option value="กองยุทธศาสตร์และแผนงาน">6. กองยุทธศาสตร์และแผนงาน</option>
+                <option value="กองส่งเสริมสิทธิและสวัสดิการคนพิการ">7. กองส่งเสริมสิทธิและสวัสดิการคนพิการ</option>
+              </select>
+            </div>
+
+            <!-- 2. หน่วยงาน (Dropdown แปรผันตามสำนัก/กองที่เลือกเท่านั้น) -->
+            <div class="sm:col-span-6">
+              <label for="subUnitSelect" class="form-label">2. หน่วยงาน <span class="required-dot">*</span></label>
+              <select id="subUnitSelect" class="form-select bg-white" required>
+                <option value="">-- กรุณาเลือกสำนัก/กองก่อน --</option>
+              </select>
             </div>
           </div>
 
@@ -500,21 +529,21 @@
         </div>
       </section>
 
-      <!-- ส่วนที่ 3: ข้อมูลสัญญาจ้าง (เลขที่สัญญารันตามปีปฏิทิน, คำนวณปี/เดือนอัตโนมัติจากวันเริ่ม-สิ้นสุด, ตำแหน่งผู้ลงนามเพิ่มเองได้ทั้งหมด) -->
+      <!-- ส่วนที่ 3: ข้อมูลสัญญาจ้าง (วันเดือนปีแบบระบุ วันนำหน้า และปี พ.ศ. ทุกช่องในฟอร์ม) -->
       <section class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div class="bg-brand-slate text-white px-5 py-3.5 flex items-center justify-between">
           <div class="flex items-center gap-2.5">
             <span class="w-7 h-7 rounded-full bg-brand-amber text-slate-950 font-bold text-sm flex items-center justify-center">3</span>
             <div>
               <h2 class="text-base sm:text-lg font-bold">ส่วนที่ 3: ข้อมูลสัญญาจ้าง และผู้มีอำนาจลงนาม / พยาน</h2>
-              <p class="text-xs text-slate-200">เลขที่สัญญารันตามปีปฏิทิน คำนวณระยะเวลาจากวันเริ่ม-วันสิ้นสุด และกำหนดตำแหน่งผู้ลงนามได้เองทั้งหมด</p>
+              <p class="text-xs text-slate-200">ระบบเลือกวันเดือนปีแบบ วันนำหน้า และ ปี พ.ศ. ทุกช่อง พร้อมคำนวณ ปี เดือน วัน ในสัญญาอัตโนมัติ</p>
             </div>
           </div>
           <span class="text-xs bg-white/15 px-2.5 py-1 rounded-full">ข้อ ๓ และช่องลงนาม</span>
         </div>
 
         <div class="p-5 sm:p-6 space-y-5">
-          <!-- เลขที่สัญญาจ้างรันตามปีปฏิทิน & วันที่ทำสัญญา -->
+          <!-- เลขที่สัญญาจ้างรันตามปีปฏิทิน & วันที่ทำสัญญา (เลือกวัน เดือน ปี พ.ศ.) -->
           <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-start">
             <div class="sm:col-span-3">
               <label for="contractSeqNo" class="form-label">ลำดับเลขที่สัญญา <span class="required-dot">*</span></label>
@@ -538,22 +567,32 @@
               <div id="contractNoPreviewBox" class="px-3.5 py-2.5 rounded-lg bg-amber-50 border border-amber-300 text-slate-900 font-bold text-sm min-h-[42px] flex items-center">
                 ๐๐๑/๒๕๖๘
               </div>
-              <p class="text-xs text-slate-500 mt-1">แสดงผลเป็นเลขไทยที่มุมขวาบน</p>
             </div>
 
+            <!-- วันที่ทำสัญญาฉบับนี้ (วัน เดือน ปี พ.ศ.) -->
             <div class="sm:col-span-3">
-              <label for="contractSignDate" class="form-label">วันที่ทำสัญญาฉบับนี้ <span class="required-dot">*</span></label>
-              <input type="date" id="contractSignDate" class="form-input" required>
+              <label class="form-label">วันที่ทำสัญญาฉบับนี้ <span class="required-dot">*</span></label>
+              <div class="grid grid-cols-3 gap-1.5">
+                <select id="contractSignDateDay" class="form-select bg-white" required>
+                  <option value="">วัน</option>
+                </select>
+                <select id="contractSignDateMonth" class="form-select bg-white" required>
+                  <option value="">เดือน</option>
+                </select>
+                <select id="contractSignDateYear" class="form-select bg-white" required>
+                  <option value="">ปี พ.ศ.</option>
+                </select>
+              </div>
               <p class="text-xs text-brand-blue font-medium mt-1" id="signDateThaiPreview">รูปแบบราชการ: -</p>
             </div>
           </div>
 
-          <!-- ข้อ 3: วันที่เริ่มต้น - วันที่สิ้นสุด และระบบคำนวณจำนวนปี/เดือนอัตโนมัติ -->
+          <!-- ข้อ 3: วันที่เริ่มต้น - วันที่สิ้นสุด และระบบคำนวณจำนวนปี เดือน วัน อัตโนมัติ -->
           <div class="pt-4 border-t border-slate-100">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
               <div>
                 <h3 class="text-sm font-bold text-slate-800">กำหนดระยะเวลาการจ้าง (ข้อ ๓) — คำนวณจากวันเริ่มและวันสิ้นสุดอัตโนมัติ</h3>
-                <p class="text-xs text-slate-500">เลือกวันที่เริ่มต้นและวันที่สิ้นสุดสัญญา ระบบจะคำนวณจำนวนปีและเดือนใส่ในข้อ ๓ ของสัญญาให้อัตโนมัติ</p>
+                <p class="text-xs text-slate-500">เลือกวันที่เริ่มต้นและวันที่สิ้นสุดสัญญา ระบบจะคำนวณจำนวน ปี เดือน วัน ใส่ในข้อ ๓ ของสัญญาให้อัตโนมัติ</p>
               </div>
               <div class="flex flex-wrap items-center gap-1.5">
                 <span class="text-xs text-slate-500 mr-1">ตั้งค่าระยะเวลาด่วน:</span>
@@ -564,28 +603,51 @@
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-start">
+              <!-- วันที่เริ่มต้นสัญญาใหม่ -->
               <div class="sm:col-span-4">
-                <label for="newStartDate" class="form-label">เริ่มตั้งแต่วันที่ <span class="required-dot">*</span></label>
-                <input type="date" id="newStartDate" class="form-input" required>
+                <label class="form-label">เริ่มตั้งแต่วันที่ <span class="required-dot">*</span></label>
+                <div class="grid grid-cols-3 gap-1.5">
+                  <select id="newStartDateDay" class="form-select bg-white" required>
+                    <option value="">วัน</option>
+                  </select>
+                  <select id="newStartDateMonth" class="form-select bg-white" required>
+                    <option value="">เดือน</option>
+                  </select>
+                  <select id="newStartDateYear" class="form-select bg-white" required>
+                    <option value="">ปี พ.ศ.</option>
+                  </select>
+                </div>
                 <p class="text-xs text-brand-blue font-medium mt-1" id="newStartThaiPreview">รูปแบบราชการ: -</p>
               </div>
 
+              <!-- วันที่สิ้นสุดสัญญาใหม่ -->
               <div class="sm:col-span-4">
-                <label for="newEndDate" class="form-label">และสิ้นสุดในวันที่ <span class="required-dot">*</span></label>
-                <input type="date" id="newEndDate" class="form-input" required>
+                <label class="form-label">และสิ้นสุดในวันที่ <span class="required-dot">*</span></label>
+                <div class="grid grid-cols-3 gap-1.5">
+                  <select id="newEndDateDay" class="form-select bg-white" required>
+                    <option value="">วัน</option>
+                  </select>
+                  <select id="newEndDateMonth" class="form-select bg-white" required>
+                    <option value="">เดือน</option>
+                  </select>
+                  <select id="newEndDateYear" class="form-select bg-white" required>
+                    <option value="">ปี พ.ศ.</option>
+                  </select>
+                </div>
                 <p class="text-xs text-brand-blue font-medium mt-1" id="newEndThaiPreview">รูปแบบราชการ: -</p>
               </div>
 
+              <!-- แสดงผลลัพธ์คำนวณ ปี เดือน วัน -->
               <div class="sm:col-span-4">
-                <label class="form-label">ระยะเวลาที่ระบบคำนวณได้ (ข้อ ๓)</label>
+                <label class="form-label">ระยะเวลาสัญญาจ้างที่คำนวณได้ (ข้อ ๓)</label>
                 <div id="calculatedDurationBox" class="px-3.5 py-2.5 rounded-lg bg-emerald-50 border border-emerald-300 text-emerald-950 font-bold text-sm min-h-[42px] flex items-center">
                   รอเลือกวันเริ่มและวันสิ้นสุด
                 </div>
-                <p class="text-xs text-slate-500 mt-1">คำนวณจากวันเริ่มถึงวันสิ้นสุดสัญญาโดยอัตโนมัติ</p>
+                <p class="text-xs text-slate-500 mt-1">แสดงผลเป็น ปี เดือน วัน ในสัญญาจ้าง</p>
               </div>
             </div>
 
-            <!-- ข้อมูลอ้างอิงสัญญาเดิมสำหรับบันทึกในระบบ (ไม่นำไปแสดงในหน้าเอกสารสัญญาจ้างตามที่กำหนด) -->
+            <!-- ข้อมูลสัญญาจ้างเดิม -->
             <details class="mt-3 bg-slate-50 rounded-lg border border-slate-200 px-4 py-2.5">
               <summary class="text-xs font-semibold text-slate-600 cursor-pointer select-none">
                 ข้อมูลสัญญาจ้างเดิม (สำหรับบันทึกประวัติคำร้องเท่านั้น — ไม่แสดงในเอกสารสัญญาจ้าง)
@@ -596,18 +658,38 @@
                   <input type="text" id="oldContractNo" class="form-input text-sm" placeholder="เช่น 142/2563">
                 </div>
                 <div>
-                  <label for="oldStartDate" class="form-label text-xs">วันที่เริ่มสัญญาเดิม</label>
-                  <input type="date" id="oldStartDate" class="form-input text-sm">
+                  <label class="form-label text-xs">วันที่เริ่มสัญญาเดิม</label>
+                  <div class="grid grid-cols-3 gap-1">
+                    <select id="oldStartDateDay" class="form-select text-xs bg-white">
+                      <option value="">วัน</option>
+                    </select>
+                    <select id="oldStartDateMonth" class="form-select text-xs bg-white">
+                      <option value="">เดือน</option>
+                    </select>
+                    <select id="oldStartDateYear" class="form-select text-xs bg-white">
+                      <option value="">ปี พ.ศ.</option>
+                    </select>
+                  </div>
                 </div>
                 <div>
-                  <label for="oldEndDate" class="form-label text-xs">วันที่สิ้นสุดสัญญาเดิม</label>
-                  <input type="date" id="oldEndDate" class="form-input text-sm">
+                  <label class="form-label text-xs">วันที่สิ้นสุดสัญญาเดิม</label>
+                  <div class="grid grid-cols-3 gap-1">
+                    <select id="oldEndDateDay" class="form-select text-xs bg-white">
+                      <option value="">วัน</option>
+                    </select>
+                    <select id="oldEndDateMonth" class="form-select text-xs bg-white">
+                      <option value="">เดือน</option>
+                    </select>
+                    <select id="oldEndDateYear" class="form-select text-xs bg-white">
+                      <option value="">ปี พ.ศ.</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             </details>
           </div>
 
-          <!-- ผู้มีอำนาจลงนาม พนักงานราชการ และพยาน 2 คน (สามารถเพิ่มและแก้ไขตำแหน่งเองได้ทั้งหมด) -->
+          <!-- ผู้มีอำนาจลงนาม พนักงานราชการ และพยาน 2 คน -->
           <div class="pt-4 border-t border-slate-100">
             <div class="mb-3">
               <h3 class="text-sm font-bold text-slate-800">ข้อมูลผู้ลงนามในสัญญาจ้าง (สามารถเพิ่มหรือแก้ไขตำแหน่งเองได้ทั้งหมด)</h3>
@@ -633,7 +715,7 @@
               <!-- 2. ตำแหน่งพนักงานราชการใต้ช่องลงนาม -->
               <div class="sm:col-span-12">
                 <label for="empSignPosition" class="form-label">ตำแหน่งพนักงานราชการ (แสดงใต้ช่องลงชื่อพนักงานราชการ — พิมพ์เพิ่มหรือแก้ไขเองได้) <span class="required-dot">*</span></label>
-                <input type="text" id="empSignPosition" class="form-input" placeholder="เช่น พนักงานราชการ ตำแหน่งนักทรัพยากรบุคคล" required>
+                <input type="text" id="empSignPosition" class="form-input" placeholder="เช่น ตำแหน่ง นักทรัพยากรบุคคล" required>
               </div>
 
               <!-- 3. พยานคนที่ 1 -->
@@ -669,8 +751,8 @@
           <span class="inline-flex items-center px-2.5 py-1 rounded-md bg-blue-50 text-brand-navy font-semibold border border-blue-200">
             ตัวเลขไทย (๐-๙) ทั้งฉบับ
           </span>
-          <span class="inline-flex items-center px-2.5 py-1 rounded-md bg-blue-50 text-brand-navy font-semibold border border-blue-200">
-            กั้นหน้า ๒.๐ ซม. / กั้นหลัง ๑.๕ ซม.
+          <span class="inline-flex items-center px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 font-semibold border border-emerald-200">
+            บันทึกเข้าระบบ Admin Dashboard & Google Sheets อัตโนมัติ
           </span>
         </div>
 
@@ -679,7 +761,7 @@
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
             </svg>
-            สร้างเอกสารสัญญาจ้าง
+            บันทึกข้อมูลและสร้างเอกสารสัญญาจ้าง
           </button>
         </div>
       </div>
@@ -701,13 +783,16 @@
             </span>
           </h2>
           <p class="text-xs sm:text-sm text-slate-600">
-            ตั้งค่าระยะขอบกระดาษมาตรฐาน: กั้นหน้า ๒.๐ ซม. | กั้นหลัง ๑.๕ ซม. | ตรวจคำผิดและจัดตัดคำภาษาไทยเรียบร้อยแล้ว
+            ตั้งค่าระยะขอบกระดาษมาตรฐาน: กั้นหน้า ๒.๐ ซม. | กั้นหลัง ๑.๕ ซม. | บันทึกเข้าระบบเรียบร้อยแล้ว
           </p>
         </div>
 
         <div class="flex flex-wrap items-center gap-2.5">
           <button type="button" id="btnBackToEdit" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-sm font-semibold transition cursor-pointer">
             &larr; กลับไปแก้ไขข้อมูล
+          </button>
+          <button type="button" id="btnGoToAdminFromPreview" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-blue-300 bg-blue-50 hover:bg-blue-100 text-brand-navy text-sm font-semibold transition cursor-pointer">
+            ดูใน Admin Dashboard
           </button>
           <button type="button" id="btnPrintDoc" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-brand-green hover:bg-green-700 text-white text-sm font-bold shadow-sm transition cursor-pointer">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -775,7 +860,7 @@
             ซึ่งต่อไปในสัญญานี้เรียกว่า “พนักงานราชการ” อีกฝ่ายหนึ่ง ทั้งสองฝ่ายต่างได้ตกลงร่วมกันทำสัญญาจ้างไว้ต่อกัน ดังต่อไปนี้
           </p>
 
-          <!-- ข้อ ๑ (นำเลขที่ตำแหน่งออกตามคำสั่ง) -->
+          <!-- ข้อ ๑ -->
           <p class="doc-indent">
             <span class="font-bold">ข้อ ๑</span> กรมตกลงจ้าง และพนักงานราชการตกลงรับจ้างทำงานให้แก่กรม โดยเป็นพนักงานราชการ ดังต่อไปนี้
           </p>
@@ -809,9 +894,9 @@
             ในกรณีที่มีปัญหาว่างานใดเป็นหน้าที่การงานตามสัญญาจ้างนี้หรือไม่ หรือกรณีที่มีข้อสงสัยเกี่ยวกับข้อความของสัญญาจ้าง หรือข้อความในเอกสารแนบท้ายสัญญาจ้าง ให้กรมเป็นผู้วินิจฉัย และพนักงานราชการจะต้องปฏิบัติตามคำวินิจฉัยนั้น
           </p>
 
-          <!-- ข้อ ๓ (คำนวณปีและเดือนจากวันเริ่ม-วันสิ้นสุด และนำคำว่าต่อเนื่องจากสัญญาจ้างเดิมออกทั้งหมด) -->
+          <!-- ข้อ ๓ -->
           <p class="doc-indent">
-            <span class="font-bold">ข้อ ๓</span> กรมตกลงจ้างพนักงานราชการมีกำหนด <span id="docDurationYears" class="doc-fill">....</span> ปี <span id="docDurationMonths" class="doc-fill">....</span> เดือน
+            <span class="font-bold">ข้อ ๓</span> กรมตกลงจ้างพนักงานราชการมีกำหนด <span id="docDurationYears" class="doc-fill">....</span> ปี <span id="docDurationMonths" class="doc-fill">....</span> เดือน <span id="docDurationDays" class="doc-fill">....</span> วัน
             เริ่มตั้งแต่วันที่ <span id="docNewStartDay" class="doc-fill">......</span> เดือน <span id="docNewStartMonth" class="doc-fill">....................</span> พ.ศ. <span id="docNewStartYear" class="doc-fill">..........</span>
             และสิ้นสุดในวันที่ <span id="docNewEndDay" class="doc-fill">......</span> เดือน <span id="docNewEndMonth" class="doc-fill">....................</span> พ.ศ. <span id="docNewEndYear" class="doc-fill">..........</span>
           </p>
@@ -829,7 +914,7 @@
             ทั้งนี้ พนักงานราชการต้องเป็นผู้รับผิดชอบในการเสียภาษีเงินได้ โดยกรมจะเป็นผู้หักไว้ ณ ที่จ่าย
           </p>
 
-          <!-- ข้อ ๕ - ข้อ ๑๕ (ใช้เลขไทยทั้งหมด ตรวจคำผิดและตัดคำให้สวยงาม) -->
+          <!-- ข้อ ๕ - ข้อ ๑๕ -->
           <p class="doc-indent">
             <span class="font-bold">ข้อ ๕</span> พนักงานราชการอาจได้รับสิทธิประโยชน์อื่น ตามระเบียบสำนักนายกรัฐมนตรีว่าด้วยพนักงานราชการ พ.ศ. ๒๕๔๗ หรือตามที่คณะกรรมการ หรือกรมกำหนด
           </p>
@@ -877,7 +962,7 @@
             สัญญานี้ทำขึ้นสองฉบับมีข้อความถูกต้องตรงกัน คู่สัญญาอ่าน ตรวจสอบ และเข้าใจข้อความในสัญญาโดยละเอียดแล้ว จึงลงลายมือชื่อไว้เป็นหลักฐานต่อหน้าพยาน ณ วัน เดือน ปีดังกล่าวข้างต้น และต่างฝ่ายต่างเก็บรักษาไว้ฝ่ายละฉบับ
           </p>
 
-          <!-- Signature Block (ผู้ว่าจ้าง, พนักงานราชการ, พยาน ๑, พยาน ๒ พร้อมตำแหน่งที่กำหนดเองได้ทั้งหมด) -->
+          <!-- Signature Block -->
           <div class="mt-7 grid grid-cols-2 gap-y-7 gap-x-4 text-center">
             <!-- ผู้ว่าจ้าง -->
             <div>
@@ -982,9 +1067,343 @@
       </div>
     </section>
 
+    <!-- ==========================================
+         VIEW 3: ADMIN DASHBOARD & GOOGLE SHEETS BACKEND
+         ========================================== -->
+    <section id="adminSection" class="no-print hidden space-y-6">
+
+      <!-- Admin Header & Google Sheets Backend Connection Panel -->
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="bg-brand-navy text-white px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 text-xs font-bold rounded bg-brand-amber text-slate-950">ADMIN DASHBOARD</span>
+              <span id="gasConnBadge" class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-white/15 text-blue-100">
+                โหมดบันทึกในระบบ (พร้อมเชื่อมต่อ Google Sheets)
+              </span>
+            </div>
+            <h2 class="text-lg sm:text-xl font-bold mt-1">ระบบติดตามและสรุปข้อมูลผู้ทำสัญญาจ้างพนักงานราชการ</h2>
+            <p class="text-xs text-blue-200">ตรวจสอบรายชื่อผู้เข้าระบบมาทำสัญญาจ้าง สรุปยอดรายสำนัก/กอง หน่วยงาน กลุ่มงาน และเชื่อมต่อ Google Sheets</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button type="button" id="btnLoadSampleDashboard" class="px-3.5 py-2 rounded-lg bg-brand-amber hover:bg-amber-400 text-slate-950 text-xs sm:text-sm font-bold shadow-sm transition cursor-pointer">
+              + โหลดข้อมูลตัวอย่างเข้า Dashboard (Sample Data)
+            </button>
+            <button type="button" id="btnSyncFromGas" class="px-3.5 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-white text-xs sm:text-sm font-semibold border border-white/25 transition cursor-pointer">
+              ดึงข้อมูลล่าสุดจาก Google Sheets
+            </button>
+          </div>
+        </div>
+
+        <!-- Google Apps Script (Google Sheets) Configuration Bar -->
+        <div class="p-4 sm:p-5 bg-slate-50 border-b border-slate-200">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-end">
+            <div class="lg:col-span-8">
+              <label for="gasWebAppUrl" class="form-label text-xs">
+                Google Apps Script Web App URL (สำหรับส่งข้อมูลเข้า Google Sheets อัตโนมัติ และดึงข้อมูลมาแสดงที่ Admin Dashboard)
+              </label>
+              <input type="url" id="gasWebAppUrl" class="form-input text-sm font-mono" value="https://script.google.com/macros/s/AKfycbyDW0xl948ds4pLCApTPPhYyF13pAqHMXOqta-4mw2ytz6TKVmj6URZ6DPkFfel2NoH/exec" placeholder="https://script.google.com/macros/s/AKfycbyDW0xl948ds4pLCApTPPhYyF13pAqHMXOqta-4mw2ytz6TKVmj6URZ6DPkFfel2NoH/exec">
+            </div>
+            <div class="lg:col-span-4 flex flex-wrap gap-2">
+              <button type="button" id="btnSaveGasUrl" class="px-4 py-2.5 rounded-lg bg-brand-blue hover:bg-blue-700 text-white text-sm font-semibold transition cursor-pointer">
+                บันทึก URL เชื่อมต่อ
+              </button>
+              <button type="button" id="btnToggleGasGuide" class="px-3.5 py-2.5 rounded-lg bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-sm font-semibold transition cursor-pointer">
+                ดูโค้ด Google Sheets (Code.gs)
+              </button>
+            </div>
+          </div>
+          <p id="gasStatusMsg" class="text-xs text-slate-600 mt-2">
+            หมายเหตุ: ทุกครั้งที่มีผู้กด "บันทึกข้อมูลและสร้างเอกสารสัญญาจ้าง" ระบบจะแสดงใน Dashboard นี้ทันที และหากใส่ Web App URL ไว้ ระบบจะส่งข้อมูลไปบันทึกลง Google Sheets อัตโนมัติ
+          </p>
+
+          <!-- Collapsible Google Apps Script Code Guide -->
+          <div id="gasCodeGuideBox" class="hidden mt-4 p-4 rounded-xl bg-slate-900 text-slate-100 text-xs space-y-2">
+            <div class="flex items-center justify-between">
+              <strong class="text-amber-400 text-sm">วิธีเชื่อมระบบเข้ากับ Google Sheets (ใช้เวลา 1 นาที):</strong>
+              <button type="button" id="btnCopyGasScript" class="px-3 py-1 rounded bg-amber-400 text-slate-950 font-bold cursor-pointer">
+                คัดลอกโค้ด Code.gs
+              </button>
+            </div>
+            <ol class="list-decimal list-inside space-y-1 text-slate-300">
+              <li>สร้างไฟล์ Google Sheets ใหม่ ไปที่เมนู <strong>ส่วนขยาย (Extensions) &rarr; Apps Script</strong></li>
+              <li>วางโค้ดด้านล่างนี้ลงในไฟล์ <code>Code.gs</code> แล้วกดบันทึก</li>
+              <li>กดปุ่ม <strong>การทำให้ใช้งานได้ (Deploy) &rarr; การทำให้ใช้งานได้รายการใหม่ (New deployment)</strong> เลือกประเภท <strong>เว็บแอป (Web app)</strong></li>
+              <li>ตั้งค่าผู้มีสิทธิ์เข้าถึงเป็น <strong>ทุกคน (Anyone)</strong> กด Deploy แล้วคัดลอก <strong>Web App URL</strong> มาวางในช่องด้านบน</li>
+            </ol>
+            <pre id="gasCodeSnippet" class="p-3 rounded-lg bg-slate-950 text-emerald-300 overflow-x-auto font-mono text-[11px] leading-relaxed">function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Contracts') || SpreadsheetApp.getActiveSpreadsheet().insertSheet('Contracts');
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(['Timestamp', 'ContractNo', 'Prefix', 'FullName', 'NationalId', 'Bureau', 'SubUnit', 'EmpType', 'JobGroup', 'PositionTitle', 'SalaryAmount', 'DurationText', 'StartDate', 'EndDate', 'Phone', 'Email', 'RawJson']);
+  }
+  var data = JSON.parse(e.postData.contents);
+  sheet.appendRow([
+    new Date(), data.contractNo, data.prefix, data.fullName, data.nationalId,
+    data.bureau, data.subUnit, data.empType, data.jobGroup, data.positionTitle,
+    data.salaryAmount, data.durationText, data.startDateThai, data.endDateThai,
+    data.phone, data.email, JSON.stringify(data)
+  ]);
+  return ContentService.createTextOutput(JSON.stringify({ status: 'success' })).setMimeType(ContentService.MimeType.JSON);
+}
+
+function doGet(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Contracts');
+  if (!sheet || sheet.getLastRow() <= 1) {
+    return ContentService.createTextOutput(JSON.stringify({ records: [] })).setMimeType(ContentService.MimeType.JSON);
+  }
+  var rows = sheet.getDataRange().getValues();
+  var records = [];
+  for (var i = 1; i < rows.length; i++) {
+    try { records.push(JSON.parse(rows[i][16])); } catch (err) {}
+  }
+  return ContentService.createTextOutput(JSON.stringify({ records: records })).setMimeType(ContentService.MimeType.JSON);
+}</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI Summary Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">ผู้ทำสัญญาจ้างทั้งหมด</span>
+            <span id="dashSampleTag" class="hidden text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-100 text-amber-900">Sample Data</span>
+          </div>
+          <div class="mt-2 flex items-baseline gap-2">
+            <span id="kpiTotalCount" class="text-3xl font-extrabold text-brand-navy">0</span>
+            <span class="text-sm font-medium text-slate-600">คน (รายการ)</span>
+          </div>
+          <p class="text-xs text-slate-500 mt-1" id="kpiEmpTypeSplit">พนักงานราชการทั่วไป 0 คน • พิเศษ 0 คน</p>
+        </div>
+
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-500">สำนัก/กอง ที่ส่งข้อมูลแล้ว</span>
+          <div class="mt-2 flex items-baseline gap-2">
+            <span id="kpiActiveBureaus" class="text-3xl font-extrabold text-brand-blue">0</span>
+            <span class="text-sm font-medium text-slate-600">/ 7 สำนัก/กอง</span>
+          </div>
+          <p class="text-xs text-slate-500 mt-1" id="kpiActiveSubUnits">ครอบคลุม 0 หน่วยงานย่อย</p>
+        </div>
+
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-500">งบประมาณค่าตอบแทนรวม/เดือน</span>
+          <div class="mt-2 flex items-baseline gap-2">
+            <span id="kpiTotalSalary" class="text-2xl sm:text-3xl font-extrabold text-emerald-700">0</span>
+            <span class="text-sm font-medium text-slate-600">บาท</span>
+          </div>
+          <p class="text-xs text-slate-500 mt-1" id="kpiAvgSalary">เฉลี่ย 0 บาท/คน/เดือน</p>
+        </div>
+
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-500">กลุ่มงานที่มีผู้ทำสัญญามากที่สุด</span>
+          <div class="mt-2">
+            <span id="kpiTopJobGroup" class="text-xl font-extrabold text-slate-900 block truncate">-</span>
+          </div>
+          <p class="text-xs text-slate-500 mt-1" id="kpiTopJobGroupCount">ยังไม่มีข้อมูลในระบบ</p>
+        </div>
+      </div>
+
+      <!-- Breakdown Grid: แยกตาม 7 สำนัก/กอง และ แยกตามกลุ่มงาน/ตำแหน่ง -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- แจกแจงรายสำนัก/กอง (ครบทั้ง 7 กอง) -->
+        <div class="lg:col-span-7 bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-base font-bold text-slate-900">สรุปจำนวนผู้ทำสัญญาแยกตามสำนัก/กอง (7 กอง)</h3>
+              <p class="text-xs text-slate-500">แจกแจงจำนวนคนและสัดส่วนของแต่ละสำนัก/กอง</p>
+            </div>
+            <span class="text-xs font-semibold text-brand-navy bg-blue-50 px-2.5 py-1 rounded-md border border-blue-200">โครงสร้าง พก.</span>
+          </div>
+          <div id="bureauBreakdownList" class="space-y-3"></div>
+        </div>
+
+        <!-- แจกแจงตามกลุ่มงานและตำแหน่ง -->
+        <div class="lg:col-span-5 bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+          <div class="mb-4">
+            <h3 class="text-base font-bold text-slate-900">แจกแจงตามกลุ่มงานและตำแหน่ง</h3>
+            <p class="text-xs text-slate-500">สรุปจำนวนพนักงานราชการแยกตามกลุ่มงานและตำแหน่ง</p>
+          </div>
+          <div id="jobGroupBreakdownList" class="space-y-2.5"></div>
+        </div>
+      </div>
+
+      <!-- Detailed Submissions Table with Filters -->
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-5 border-b border-slate-200 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h3 class="text-base font-bold text-slate-900">บัญชีรายชื่อผู้เข้าระบบจัดทำสัญญาจ้างพนักงานราชการ</h3>
+            <p class="text-xs text-slate-500">สามารถค้นหา กรองตามสำนัก/กอง หรือคลิกปุ่ม "ดูสัญญา A4" เพื่อเปิดดูและสั่งพิมพ์เอกสารของแต่ละคนได้ทันที</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <input type="search" id="adminSearchInput" class="form-input sm:w-56 text-sm" placeholder="ค้นหาชื่อ / เลขบัตร / ตำแหน่ง...">
+            <select id="adminBureauFilter" class="form-select sm:w-60 text-sm bg-white">
+              <option value="">ทุกสำนัก/กอง (ทั้งหมด)</option>
+              <option value="กลุ่มตรวจสอบภายใน">1. กลุ่มตรวจสอบภายใน</option>
+              <option value="กลุ่มพัฒนาระบบบริหาร">2. กลุ่มพัฒนาระบบบริหาร</option>
+              <option value="สำนักงานเลขานุการกรม">3. สำนักงานเลขานุการกรม</option>
+              <option value="กองกองทุนและส่งเสริมความเสมอภาคคนพิการ">4. กองกองทุนและส่งเสริมความเสมอภาคคนพิการ</option>
+              <option value="กองคุ้มครองสวัสดิภาพและพัฒนาคนพิการ">5. กองคุ้มครองสวัสดิภาพและพัฒนาคนพิการ</option>
+              <option value="กองยุทธศาสตร์และแผนงาน">6. กองยุทธศาสตร์และแผนงาน</option>
+              <option value="กองส่งเสริมสิทธิและสวัสดิการคนพิการ">7. กองส่งเสริมสิทธิและสวัสดิการคนพิการ</option>
+            </select>
+            <button type="button" id="btnClearAllRecords" class="px-3 py-2 rounded-lg border border-red-200 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-semibold transition cursor-pointer">
+              ล้างรายการทั้งหมด
+            </button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-100 text-slate-700 text-xs font-bold uppercase border-b border-slate-200">
+                <th class="py-3 px-4">สัญญาเลขที่</th>
+                <th class="py-3 px-4">ชื่อ-นามสกุล / เลขบัตร</th>
+                <th class="py-3 px-4">สำนัก/กอง & หน่วยงาน</th>
+                <th class="py-3 px-4">ตำแหน่ง / กลุ่มงาน</th>
+                <th class="py-3 px-4 text-right">ค่าตอบแทน (บาท)</th>
+                <th class="py-3 px-4">ระยะเวลาสัญญา</th>
+                <th class="py-3 px-4 text-center">จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="adminTableBody" class="divide-y divide-slate-200 text-sm"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
   </main>
 
   <script>
+    // =========================================================================
+    // 0. โครงสร้างข้อมูล 7 สำนัก/กอง และหน่วยงานย่อย (ตามที่ผู้ใช้กำหนดเท่านั้น)
+    // =========================================================================
+    const BUREAU_SUBUNITS_MAP = {
+      'กลุ่มตรวจสอบภายใน': [
+        'กลุ่มตรวจสอบภายใน'
+      ],
+      'กลุ่มพัฒนาระบบบริหาร': [
+        'กลุ่มพัฒนาระบบบริหาร'
+      ],
+      'สำนักงานเลขานุการกรม': [
+        'กลุ่มอำนวยการ',
+        'กลุ่มงานเลขานุการนักบริหาร',
+        'กลุ่มบริหารทรัพยากรบุคคล',
+        'กลุ่มพัฒนาบุคลากร',
+        'กลุ่มสื่อสารองค์กร',
+        'กลุ่มกฎหมาย',
+        'กลุ่มการคลัง',
+        'กลุ่มงานพัสดุ'
+      ],
+      'กองกองทุนและส่งเสริมความเสมอภาคคนพิการ': [
+        'ฝ่ายบริหารทั่วไป',
+        'กลุ่มส่งเสริมโอกาสและติดตามประเมินผล',
+        'กลุ่มส่งเสริมความเสมอภาคและงานคดี',
+        'กลุ่มบริหารกองทุน',
+        'กลุ่มส่งเสริมและสนับสนุนโครงการ',
+        'กลุ่มส่งเสริมการจ้างงานคนพิการ'
+      ],
+      'กองคุ้มครองสวัสดิภาพและพัฒนาคนพิการ': [
+        'ฝ่ายบริหารทั่วไป',
+        'กลุ่มมาตรการและกลไก',
+        'กลุ่มคุ้มครองสวัสดิภาพคนพิการ',
+        'กลุ่มส่งเสริมและพัฒนาคนพิการ',
+        'สถานคุ้มครองและพัฒนาคนพิการบ้านเฟื่องฟ้า จังหวัดนนทบุรี',
+        'สถานคุ้มครองและพัฒนาคนพิการบ้านราชาวดี (ชาย) จังหวัดนนทบุรี',
+        'สถานคุ้มครองและพัฒนาคนพิการบ้านราชาวดี (หญิง) จังหวัดนนทบุรี',
+        'สถานคุ้มครองและพัฒนาคนพิการบ้านนนทภูมิ จังหวัดนนทบุรี',
+        'สถานคุ้มครองและพัฒนาคนพิการพระประแดง จังหวัดสมุทรปราการ',
+        'สถานคุ้มครองและพัฒนาคนพิการบางปะกง จังหวัดฉะเชิงเทรา',
+        'สถานคุ้มครองและพัฒนาคนพิการการุณยเวศม์ จังหวัดชลบุรี',
+        'สถานคุ้มครองและพัฒนาคนพิการ จังหวัดราชบุรี',
+        'สถานคุ้มครองและพัฒนาคนพิการบ้านอุบลฮักแพง จังหวัดอุบลราชธานี',
+        'สถานคุ้มครองและพัฒนาคนพิการบ้านกึ่งวิถี (ชาย) จังหวัดปทุมธานี',
+        'สถานคุ้มครองและพัฒนาคนพิการบ้านกึ่งวิถี (หญิง) จังหวัดปทุมธานี',
+        'ศูนย์พัฒนาศักยภาพบุคคลออทิสติก จังหวัดขอนแก่น',
+        'ศูนย์พัฒนาศักยภาพบุคคลออทิสติก จังหวัดนนทบุรี'
+      ],
+      'กองยุทธศาสตร์และแผนงาน': [
+        'ฝ่ายบริหารทั่วไป',
+        'กลุ่มนโยบายและยุทธศาสตร์',
+        'กลุ่มแผนงานและงบประมาณ',
+        'กลุ่มส่งเสริมความร่วมมือระหว่างประเทศ',
+        'กลุ่มวิจัยและติดตามประเมินผล',
+        'ศูนย์ข้อมูลคนพิการและเทคโนโลยีสารสนเทศ'
+      ],
+      'กองส่งเสริมสิทธิและสวัสดิการคนพิการ': [
+        'ฝ่ายบริหารทั่วไป',
+        'กลุ่มส่งเสริมองค์กรและเครือข่าย',
+        'กลุ่มส่งเสริมศูนย์บริการคนพิการ',
+        'กลุ่มส่งเสริมศักยภาพคนพิการ',
+        'กลุ่มส่งเสริมสิทธิ',
+        'ศูนย์ส่งเสริมอาชีพคนพิการ (โรงงานปีคนพิการสากล)',
+        'ศูนย์พัฒนาศักยภาพและอาชีพคนพิการพระประแดง จังหวัดสมุทรปราการ',
+        'ศูนย์พัฒนาศักยภาพและอาชีพคนพิการ จังหวัดขอนแก่น',
+        'ศูนย์พัฒนาศักยภาพและอาชีพคนพิการบ้านทองพูน-เผ่าพนัส จังหวัดอุบลราชธานี',
+        'ศูนย์พัฒนาศักยภาพและอาชีพคนพิการหยาดฝน จังหวัดเชียงใหม่',
+        'ศูนย์พัฒนาศักยภาพและอาชีพคนพิการ จังหวัดนครศรีธรรมราช',
+        'ศูนย์พัฒนาศักยภาพและอาชีพคนพิการบ้านศรีวนาไล จังหวัดอุบลราชธานี',
+        'ศูนย์พัฒนาศักยภาพและอาชีพคนพิการ จังหวัดหนองคาย',
+        'ศูนย์พัฒนาศักยภาพและอาชีพคนพิการบ้านโมกุลเฉลิมพระชนมพรรษา 5 รอบฯ จังหวัดลพบุรี'
+      ]
+    };
+
+    const ALL_BUREAUS = Object.keys(BUREAU_SUBUNITS_MAP);
+
+    const bureauSelectEl = document.getElementById('bureauSelect');
+    const subUnitSelectEl = document.getElementById('subUnitSelect');
+
+    function populateSubUnitDropdown(selectedBureau, selectedSubUnit = '') {
+      subUnitSelectEl.innerHTML = '';
+      if (!selectedBureau || !BUREAU_SUBUNITS_MAP[selectedBureau]) {
+        const opt = document.createElement('option');
+        opt.value = '';
+        opt.textContent = '-- กรุณาเลือกสำนัก/กองก่อน --';
+        subUnitSelectEl.appendChild(opt);
+        return;
+      }
+
+      const units = BUREAU_SUBUNITS_MAP[selectedBureau];
+      if (units.length > 1) {
+        const defaultOpt = document.createElement('option');
+        defaultOpt.value = '';
+        defaultOpt.textContent = '-- เลือกหน่วยงาน --';
+        subUnitSelectEl.appendChild(defaultOpt);
+      }
+
+      units.forEach((unitName, idx) => {
+        const opt = document.createElement('option');
+        opt.value = unitName;
+        opt.textContent = `${idx + 1}. ${unitName}`;
+        subUnitSelectEl.appendChild(opt);
+      });
+
+      if (selectedSubUnit && units.includes(selectedSubUnit)) {
+        subUnitSelectEl.value = selectedSubUnit;
+      } else if (units.length === 1) {
+        subUnitSelectEl.value = units[0];
+      }
+    }
+
+    bureauSelectEl.addEventListener('change', function() {
+      populateSubUnitDropdown(this.value);
+      this.setAttribute('aria-invalid', 'false');
+      subUnitSelectEl.setAttribute('aria-invalid', 'false');
+    });
+
+    subUnitSelectEl.addEventListener('change', function() {
+      this.setAttribute('aria-invalid', 'false');
+    });
+
+    // ดึงข้อความสังกัดแบบรวม (หน่วยงาน + สำนัก/กอง) สำหรับแสดงในสัญญาจ้าง ผนวก ก.
+    function getCombinedAffiliationText() {
+      const bureau = bureauSelectEl.value.trim();
+      const subUnit = subUnitSelectEl.value.trim();
+      if (!bureau && !subUnit) return '-';
+      if (bureau === subUnit || !subUnit) return bureau;
+      return `${subUnit} ${bureau}`;
+    }
+
     // ==========================================
     // 1. ฟังก์ชันแปลงเลขอารบิกเป็นเลขไทย (๐-๙) ทั้งหมด
     // ==========================================
@@ -993,6 +1412,14 @@
       const thaiDigits = ['๐', '๑', '๒', '๓', '๔', '๕', '๖', '๗', '๘', '๙'];
       return String(str).replace(/[0-9]/g, function(w) {
         return thaiDigits[+w];
+      });
+    }
+
+    function toArabicDigits(str) {
+      if (str === null || str === undefined) return '';
+      const thaiDigits = ['๐', '๑', '๒', '๓', '๔', '๕', '๖', '๗', '๘', '๙'];
+      return String(str).replace(/[๐-๙]/g, function(w) {
+        return String(thaiDigits.indexOf(w));
       });
     }
 
@@ -1057,12 +1484,69 @@
     }
 
     // ==========================================
-    // 3. ฟังก์ชันจัดการวันที่ภาษาไทย และคำนวณระยะเวลา (ปี / เดือน) จากวันเริ่ม-วันสิ้นสุด
+    // 3. จัดการและสร้าง Dropdowns ตัวเลือก วัน เดือน ปี พ.ศ. (วันนำหน้าทุกช่องในระบบ)
     // ==========================================
     const THAI_MONTHS = [
       'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
       'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
     ];
+
+    function setupThaiDateSelectors(dayId, monthId, yearId, startYearBE, endYearBE) {
+      const daySel = document.getElementById(dayId);
+      const monthSel = document.getElementById(monthId);
+      const yearSel = document.getElementById(yearId);
+
+      for (let d = 1; d <= 31; d++) {
+        const opt = document.createElement('option');
+        opt.value = d;
+        opt.textContent = d;
+        daySel.appendChild(opt);
+      }
+
+      THAI_MONTHS.forEach((mName, idx) => {
+        const opt = document.createElement('option');
+        opt.value = idx;
+        opt.textContent = mName;
+        monthSel.appendChild(opt);
+      });
+
+      for (let y = endYearBE; y >= startYearBE; y--) {
+        const opt = document.createElement('option');
+        opt.value = y;
+        opt.textContent = y;
+        yearSel.appendChild(opt);
+      }
+    }
+
+    const currentYearBE = new Date().getFullYear() + 543;
+    setupThaiDateSelectors('birthDateDay', 'birthDateMonth', 'birthDateYear', currentYearBE - 80, currentYearBE - 18);
+    setupThaiDateSelectors('contractSignDateDay', 'contractSignDateMonth', 'contractSignDateYear', currentYearBE - 5, currentYearBE + 10);
+    setupThaiDateSelectors('newStartDateDay', 'newStartDateMonth', 'newStartDateYear', currentYearBE - 5, currentYearBE + 10);
+    setupThaiDateSelectors('newEndDateDay', 'newEndDateMonth', 'newEndDateYear', currentYearBE - 5, currentYearBE + 10);
+    setupThaiDateSelectors('oldStartDateDay', 'oldStartDateMonth', 'oldStartDateYear', currentYearBE - 15, currentYearBE + 5);
+    setupThaiDateSelectors('oldEndDateDay', 'oldEndDateMonth', 'oldEndDateYear', currentYearBE - 15, currentYearBE + 5);
+
+    function getIsoDateFromSelectors(dayId, monthId, yearId) {
+      const d = document.getElementById(dayId).value;
+      const m = document.getElementById(monthId).value;
+      const yBE = document.getElementById(yearId).value;
+      if (d === '' || m === '' || yBE === '') return '';
+      const yCE = parseInt(yBE, 10) - 543;
+      return `${yCE}-${String(parseInt(m, 10) + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    }
+
+    function setSelectorsFromIsoDate(dayId, monthId, yearId, isoDateStr) {
+      if (!isoDateStr) return;
+      const parts = isoDateStr.split('-');
+      if (parts.length !== 3) return;
+      const yCE = parseInt(parts[0], 10);
+      const mIdx = parseInt(parts[1], 10) - 1;
+      const d = parseInt(parts[2], 10);
+
+      document.getElementById(dayId).value = d;
+      document.getElementById(monthId).value = mIdx;
+      document.getElementById(yearId).value = yCE + 543;
+    }
 
     function parseDateComponents(isoDateStr) {
       if (!isoDateStr) return null;
@@ -1081,17 +1565,15 @@
       };
     }
 
-    function formatOfficialThaiDate(isoDateStr) {
+    function formatOfficialThaiDateFromIso(isoDateStr) {
       const comp = parseDateComponents(isoDateStr);
       if (!comp) return '-';
       return toThaiDigits(`${comp.day} ${comp.monthName} ${comp.yearBE}`);
     }
 
-    /**
-     * คำนวณระยะเวลาสัญญาจ้าง (ปี / เดือน) จากวันที่เริ่มต้น และวันที่สิ้นสุด
-     * รองรับการนับแบบสัญญาจ้างราชการ (นับรวมวันสิ้นสุดสัญญา คือ endDate + 1 วัน)
-     * เช่น 1 ต.ค. 2567 ถึง 30 ก.ย. 2571 = 4 ปี 0 เดือน
-     */
+    // ==========================================
+    // 4. คำนวณระยะเวลาสัญญาจ้าง (ปี เดือน วัน) จากวันเริ่มและวันสิ้นสุด
+    // ==========================================
     function calculateContractDuration(startIso, endIso) {
       if (!startIso || !endIso) {
         return { years: 0, months: 0, days: 0, valid: false };
@@ -1102,7 +1584,6 @@
         return { years: 0, months: 0, days: 0, valid: false };
       }
 
-      // บวก 1 วันเพื่อให้ครบวงรอบสัญญาจ้างราชการ (เช่น 1 ต.ค. -> 30 ก.ย. ถัดไป คือครบเต็มเดือน/ปี)
       const adjustedEnd = new Date(end.getTime());
       adjustedEnd.setDate(adjustedEnd.getDate() + 1);
 
@@ -1124,7 +1605,6 @@
       return { years, months, days, valid: true };
     }
 
-    // Format 13-digit National ID: X-XXXX-XXXXX-XX-X
     function formatNationalId(raw) {
       const digits = String(raw).replace(/\D/g, '').slice(0, 13);
       const parts = [];
@@ -1137,15 +1617,12 @@
     }
 
     // ==========================================
-    // 4. ระบบรันเลขที่สัญญาตามปีปฏิทิน (พ.ศ.)
+    // 5. ระบบรันเลขที่สัญญาตามปีปฏิทิน (พ.ศ.)
     // ==========================================
     const contractSeqInput = document.getElementById('contractSeqNo');
     const contractYearInput = document.getElementById('contractCalendarYear');
     const contractNoPreviewBox = document.getElementById('contractNoPreviewBox');
-    const contractSignDateInput = document.getElementById('contractSignDate');
 
-    // ตั้งค่าปีปฏิทินเริ่มต้นจากปีปัจจุบัน (พ.ศ.)
-    const currentYearBE = new Date().getFullYear() + 543;
     contractYearInput.value = currentYearBE;
 
     function getFormattedContractNoThai() {
@@ -1161,9 +1638,8 @@
     contractSeqInput.addEventListener('input', updateContractNoPreview);
     contractYearInput.addEventListener('input', updateContractNoPreview);
 
-    // ปุ่ม +1 รันเลขลำดับสัญญาถัดไป
     document.getElementById('btnNextSeq').addEventListener('click', function() {
-      const currentRaw = contractSeqInput.value.trim();
+      const currentRaw = toArabicDigits(contractSeqInput.value.trim());
       const digitsOnly = currentRaw.replace(/\D/g, '');
       const padLen = Math.max(digitsOnly.length, 3);
       const nextNum = (parseInt(digitsOnly || '0', 10) + 1);
@@ -1171,21 +1647,21 @@
       updateContractNoPreview();
     });
 
-    // เมื่อเปลี่ยนวันที่ทำสัญญา ให้อัปเดตปีปฏิทิน พ.ศ. ของเลขที่สัญญาตามปีปฏิทินของวันที่ทำสัญญาโดยอัตโนมัติ
-    contractSignDateInput.addEventListener('change', function() {
-      const comp = parseDateComponents(this.value);
-      if (comp) {
-        contractYearInput.value = comp.yearBE;
+    function syncContractYearFromSignDate() {
+      const yearVal = document.getElementById('contractSignDateYear').value;
+      if (yearVal) {
+        contractYearInput.value = yearVal;
         updateContractNoPreview();
       }
-      updateAllDatePreviews();
-    });
+    }
 
     // ==========================================
-    // 5. การเชื่อมโยง Event และการคำนวณในฟอร์ม
+    // 6. การเชื่อมโยง Event และการคำนวณอัตโนมัติในฟอร์ม
     // ==========================================
     const salaryInput = document.getElementById('salaryAmount');
     const salaryThaiTextDisplay = document.getElementById('salaryThaiTextDisplay');
+    const ageYearsInput = document.getElementById('ageYears');
+    let isSampleDataActive = false;
 
     function updateSalaryTextPreview() {
       const val = salaryInput.value;
@@ -1200,7 +1676,6 @@
 
     salaryInput.addEventListener('input', updateSalaryTextPreview);
 
-    // ซิงค์ตำแหน่งพนักงานราชการในส่วนที่ 2 ไปยังช่องตำแหน่งใต้ลายมือชื่อพนักงานราชการในส่วนที่ 3 อัตโนมัติ (แต่แก้ไขเองได้)
     const positionTitleInput = document.getElementById('positionTitle');
     const empSignPositionInput = document.getElementById('empSignPosition');
     let empSignPosManuallyEdited = false;
@@ -1215,35 +1690,43 @@
       }
     });
 
-    // National ID auto-format
     const nationalIdInput = document.getElementById('nationalId');
     nationalIdInput.addEventListener('input', function() {
       this.value = formatNationalId(this.value);
-      this.setAttribute('aria-invalid', 'false');
     });
 
-    // Calculate age from birthDate
-    const birthDateInput = document.getElementById('birthDate');
-    const ageYearsInput = document.getElementById('ageYears');
-    birthDateInput.addEventListener('change', function() {
-      document.getElementById('birthDateThaiPreview').textContent =
-        'รูปแบบราชการ: ' + formatOfficialThaiDate(this.value);
-      if (this.value) {
-        const bYear = parseInt(this.value.split('-')[0], 10);
-        const refDateStr = document.getElementById('newStartDate').value || new Date().toISOString().slice(0, 10);
-        const refYear = parseInt(refDateStr.split('-')[0], 10);
-        const calcAge = refYear - bYear;
-        if (calcAge > 0 && calcAge < 100) {
-          ageYearsInput.value = calcAge;
-        }
+    function calculateAndSetAge() {
+      const d = document.getElementById('birthDateDay').value;
+      const m = document.getElementById('birthDateMonth').value;
+      const yBE = document.getElementById('birthDateYear').value;
+      const preview = document.getElementById('birthDateThaiPreview');
+
+      if (!d || m === '' || !yBE) {
+        preview.textContent = 'รูปแบบราชการ: -';
+        return;
       }
+
+      const isoDate = getIsoDateFromSelectors('birthDateDay', 'birthDateMonth', 'birthDateYear');
+      preview.textContent = 'รูปแบบราชการ: ' + formatOfficialThaiDateFromIso(isoDate);
+
+      const bYear = parseInt(yBE, 10) - 543;
+      const startYearVal = document.getElementById('newStartDateYear').value;
+      const refYear = startYearVal ? (parseInt(startYearVal, 10) - 543) : new Date().getFullYear();
+      const calcAge = refYear - bYear;
+      if (calcAge > 0 && calcAge < 100) {
+        ageYearsInput.value = calcAge;
+      }
+    }
+
+    ['birthDateDay', 'birthDateMonth', 'birthDateYear'].forEach(id => {
+      document.getElementById(id).addEventListener('change', calculateAndSetAge);
     });
 
     function updateDurationDisplay() {
-      const startVal = document.getElementById('newStartDate').value;
-      const endVal = document.getElementById('newEndDate').value;
+      const startIso = getIsoDateFromSelectors('newStartDateDay', 'newStartDateMonth', 'newStartDateYear');
+      const endIso = getIsoDateFromSelectors('newEndDateDay', 'newEndDateMonth', 'newEndDateYear');
       const box = document.getElementById('calculatedDurationBox');
-      const dur = calculateContractDuration(startVal, endVal);
+      const dur = calculateContractDuration(startIso, endIso);
 
       if (!dur.valid) {
         box.textContent = 'รอเลือกวันเริ่มและวันสิ้นสุดที่ถูกต้อง';
@@ -1251,62 +1734,78 @@
       }
 
       const yThai = toThaiDigits(dur.years);
-      const mThai = dur.months > 0 ? toThaiDigits(dur.months) : '-';
-      box.textContent = `กำหนด ${yThai} ปี ${mThai} เดือน`;
+      const mThai = toThaiDigits(dur.months);
+      const dThai = toThaiDigits(dur.days);
+      box.textContent = `กำหนด ${yThai} ปี ${mThai} เดือน ${dThai} วัน`;
     }
 
-    function updateAllDatePreviews() {
-      const pairs = [
-        ['birthDate', 'birthDateThaiPreview'],
-        ['contractSignDate', 'signDateThaiPreview'],
-        ['newStartDate', 'newStartThaiPreview'],
-        ['newEndDate', 'newEndThaiPreview']
-      ];
-      pairs.forEach(([inputId, previewId]) => {
-        const val = document.getElementById(inputId).value;
-        document.getElementById(previewId).textContent =
-          'รูปแบบราชการ: ' + (val ? formatOfficialThaiDate(val) : '-');
-      });
+    function handleDateSelectorChange(prefix) {
+      const dayId = `${prefix}Day`;
+      const monthId = `${prefix}Month`;
+      const yearId = `${prefix}Year`;
+      const previewId = {
+        'contractSignDate': 'signDateThaiPreview',
+        'newStartDate': 'newStartThaiPreview',
+        'newEndDate': 'newEndThaiPreview'
+      }[prefix];
+
+      const iso = getIsoDateFromSelectors(dayId, monthId, yearId);
+      if (previewId) {
+        document.getElementById(previewId).textContent = 'รูปแบบราชการ: ' + (iso ? formatOfficialThaiDateFromIso(iso) : '-');
+      }
+
+      if (prefix === 'contractSignDate') {
+        syncContractYearFromSignDate();
+      }
+
       updateDurationDisplay();
     }
 
-    document.getElementById('newStartDate').addEventListener('change', updateAllDatePreviews);
-    document.getElementById('newEndDate').addEventListener('change', updateAllDatePreviews);
+    ['contractSignDate', 'newStartDate', 'newEndDate', 'oldStartDate', 'oldEndDate'].forEach(prefix => {
+      ['Day', 'Month', 'Year'].forEach(suffix => {
+        const el = document.getElementById(`${prefix}${suffix}`);
+        el.addEventListener('change', () => {
+          el.setAttribute('aria-invalid', 'false');
+          handleDateSelectorChange(prefix);
+        });
+      });
+    });
 
-    // ปุ่มตั้งค่าระยะเวลาด่วน (1 ปี, 2 ปี, 4 ปี) คำนวณวันสิ้นสุดจากวันเริ่มให้อัตโนมัติ
+    function updateAllDatePreviews() {
+      calculateAndSetAge();
+      ['contractSignDate', 'newStartDate', 'newEndDate', 'oldStartDate', 'oldEndDate'].forEach(prefix => {
+        handleDateSelectorChange(prefix);
+      });
+    }
+
     document.querySelectorAll('.preset-duration-btn').forEach(btn => {
       btn.addEventListener('click', function() {
         const years = parseInt(this.getAttribute('data-preset-years'), 10);
-        let startVal = document.getElementById('newStartDate').value;
-        if (!startVal) {
-          const todayIso = new Date().toISOString().slice(0, 10);
-          document.getElementById('newStartDate').value = todayIso;
-          startVal = todayIso;
+        let startIso = getIsoDateFromSelectors('newStartDateDay', 'newStartDateMonth', 'newStartDateYear');
+        if (!startIso) {
+          const today = new Date();
+          setSelectorsFromIsoDate('newStartDateDay', 'newStartDateMonth', 'newStartDateYear', today.toISOString().slice(0, 10));
+          startIso = today.toISOString().slice(0, 10);
         }
-        const d = new Date(startVal + 'T00:00:00');
+
+        const d = new Date(startIso + 'T00:00:00');
         if (!isNaN(d.getTime())) {
           d.setFullYear(d.getFullYear() + years);
           d.setDate(d.getDate() - 1);
           const yyyy = d.getFullYear();
           const mm = String(d.getMonth() + 1).padStart(2, '0');
           const dd = String(d.getDate()).padStart(2, '0');
-          document.getElementById('newEndDate').value = `${yyyy}-${mm}-${dd}`;
-          updateAllDatePreviews();
+          setSelectorsFromIsoDate('newEndDateDay', 'newEndDateMonth', 'newEndDateYear', `${yyyy}-${mm}-${dd}`);
+
+          handleDateSelectorChange('newStartDate');
+          handleDateSelectorChange('newEndDate');
         }
       });
     });
 
-    // Clear aria-invalid on input
-    document.querySelectorAll('#contractForm input, #contractForm select').forEach(el => {
-      el.addEventListener('input', () => el.setAttribute('aria-invalid', 'false'));
-      el.addEventListener('change', () => el.setAttribute('aria-invalid', 'false'));
-    });
-
     // ==========================================
-    // 6. ปุ่ม "กรอกข้อมูลตัวอย่าง" (Fill Sample Data)
+    // 7. ปุ่ม "กรอกข้อมูลตัวอย่าง" (Fill Sample Data)
     // ==========================================
-    let isSampleDataActive = false;
-
     function fillSampleData() {
       isSampleDataActive = true;
       empSignPosManuallyEdited = true;
@@ -1314,7 +1813,8 @@
       document.getElementById('prefix').value = 'นางสาว';
       document.getElementById('fullName').value = 'กานต์พิชชา พัฒนากุล';
       document.getElementById('nationalId').value = '1-1005-01284-59-2';
-      document.getElementById('birthDate').value = '1993-04-15';
+
+      setSelectorsFromIsoDate('birthDateDay', 'birthDateMonth', 'birthDateYear', '1993-04-15');
       document.getElementById('ageYears').value = '31';
       document.getElementById('phone').value = '089-456-7890';
       document.getElementById('email').value = 'kanpitcha.p@dep.go.th';
@@ -1328,7 +1828,9 @@
       document.getElementById('addrZip').value = '10400';
 
       document.getElementById('departmentName').value = 'กรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ';
-      document.getElementById('divisionName').value = 'กลุ่มบริหารทรัพยากรบุคคล สำนักงานเลขานุการกรม';
+      bureauSelectEl.value = 'สำนักงานเลขานุการกรม';
+      populateSubUnitDropdown('สำนักงานเลขานุการกรม', 'กลุ่มบริหารทรัพยากรบุคคล');
+
       document.getElementById('empType').value = 'ทั่วไป';
       document.getElementById('jobGroup').value = 'บริหารทั่วไป';
       document.getElementById('positionTitle').value = 'นักทรัพยากรบุคคล';
@@ -1336,13 +1838,14 @@
 
       document.getElementById('contractSeqNo').value = '068';
       document.getElementById('contractCalendarYear').value = '2568';
-      document.getElementById('contractSignDate').value = '2025-01-01';
-      document.getElementById('newStartDate').value = '2024-10-01';
-      document.getElementById('newEndDate').value = '2028-09-30';
 
+      setSelectorsFromIsoDate('contractSignDateDay', 'contractSignDateMonth', 'contractSignDateYear', '2025-01-01');
+      setSelectorsFromIsoDate('newStartDateDay', 'newStartDateMonth', 'newStartDateYear', '2024-10-01');
+      setSelectorsFromIsoDate('newEndDateDay', 'newEndDateMonth', 'newEndDateYear', '2028-09-30');
+
+      setSelectorsFromIsoDate('oldStartDateDay', 'oldStartDateMonth', 'oldStartDateYear', '2020-10-01');
+      setSelectorsFromIsoDate('oldEndDateDay', 'oldEndDateMonth', 'oldEndDateYear', '2024-09-30');
       document.getElementById('oldContractNo').value = '142/2563';
-      document.getElementById('oldStartDate').value = '2020-10-01';
-      document.getElementById('oldEndDate').value = '2024-09-30';
 
       document.getElementById('authorityName').value = 'นายโชคชัย วิเชียรชัยยะ';
       document.getElementById('authorityPosition').value = 'อธิบดีกรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ';
@@ -1363,7 +1866,7 @@
       populateContractPreview();
 
       document.getElementById('statusDot').className = 'w-2.5 h-2.5 rounded-full bg-amber-500';
-      document.getElementById('statusText').textContent = 'สถานะ: โหลดข้อมูลตัวอย่าง (Sample Data) เรียบร้อยแล้ว พร้อมสร้างเอกสารสัญญาจ้าง';
+      document.getElementById('statusText').textContent = 'สถานะ: โหลดข้อมูลตัวอย่าง (Sample Data) เรียบร้อยแล้ว กดปุ่มบันทึกเพื่อส่งเข้า Dashboard';
       document.getElementById('sampleBadgeInPreview').classList.remove('hidden');
     }
 
@@ -1373,10 +1876,21 @@
       isSampleDataActive = false;
       empSignPosManuallyEdited = false;
       document.getElementById('contractForm').reset();
+      document.getElementById('departmentName').value = 'กรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ';
+      bureauSelectEl.value = '';
+      populateSubUnitDropdown('');
       document.getElementById('contractSeqNo').value = '001';
       document.getElementById('contractCalendarYear').value = currentYearBE;
       document.getElementById('validationBanner').classList.add('hidden');
       document.getElementById('sampleBadgeInPreview').classList.add('hidden');
+
+      const dropdowns = document.querySelectorAll('#contractForm select');
+      dropdowns.forEach(sel => {
+        if (sel.id.includes('Day') || sel.id.includes('Month') || sel.id.includes('Year')) {
+          sel.value = '';
+        }
+      });
+
       updateContractNoPreview();
       updateSalaryTextPreview();
       updateAllDatePreviews();
@@ -1385,24 +1899,17 @@
       switchView('form');
     });
 
-    document.getElementById('contractForm').addEventListener('input', function() {
-      if (isSampleDataActive) {
-        isSampleDataActive = false;
-        document.getElementById('sampleBadgeInPreview').classList.add('hidden');
-        document.getElementById('statusDot').className = 'w-2.5 h-2.5 rounded-full bg-brand-blue';
-        document.getElementById('statusText').textContent = 'สถานะ: กำลังแก้ไขข้อมูลคำร้องและสัญญาจ้าง';
-      }
-    });
-
     // ==========================================
-    // 7. การตรวจสอบความถูกต้องของข้อมูล (Validation) และการสร้างเอกสาร A4
+    // 8. การตรวจสอบความถูกต้องและการจัดแสดงพรีวิว
     // ==========================================
     function validateForm() {
       const requiredFields = [
         { id: 'prefix', label: 'คำนำหน้า' },
         { id: 'fullName', label: 'ชื่อ-นามสกุล' },
         { id: 'nationalId', label: 'เลขบัตรประชาชน 13 หลัก' },
-        { id: 'birthDate', label: 'วันเดือนปีเกิด' },
+        { id: 'birthDateDay', label: 'วันเกิด (วัน)' },
+        { id: 'birthDateMonth', label: 'วันเกิด (เดือน)' },
+        { id: 'birthDateYear', label: 'วันเกิด (ปี พ.ศ.)' },
         { id: 'ageYears', label: 'อายุ (ปี)' },
         { id: 'phone', label: 'เบอร์โทรศัพท์' },
         { id: 'email', label: 'อีเมล' },
@@ -1411,16 +1918,23 @@
         { id: 'addrDistrict', label: 'เขต/อำเภอ' },
         { id: 'addrProvince', label: 'จังหวัด' },
         { id: 'addrZip', label: 'รหัสไปรษณีย์' },
-        { id: 'departmentName', label: 'ชื่อหน่วยงาน/ส่วนราชการ' },
-        { id: 'divisionName', label: 'กอง/สำนัก/กลุ่ม' },
+        { id: 'departmentName', label: 'ชื่อส่วนราชการ (กรม)' },
+        { id: 'bureauSelect', label: '1. สำนัก/กอง' },
+        { id: 'subUnitSelect', label: '2. หน่วยงาน' },
         { id: 'jobGroup', label: 'กลุ่มงาน/ลักษณะงาน' },
         { id: 'positionTitle', label: 'ตำแหน่งพนักงานราชการ' },
         { id: 'salaryAmount', label: 'อัตราค่าตอบแทน (บาท)' },
         { id: 'contractSeqNo', label: 'ลำดับเลขที่สัญญา' },
         { id: 'contractCalendarYear', label: 'ปีปฏิทิน พ.ศ. ของเลขที่สัญญา' },
-        { id: 'contractSignDate', label: 'วันที่ทำสัญญาฉบับนี้' },
-        { id: 'newStartDate', label: 'เริ่มตั้งแต่วันที่' },
-        { id: 'newEndDate', label: 'และสิ้นสุดในวันที่' },
+        { id: 'contractSignDateDay', label: 'วันที่ทำสัญญา (วัน)' },
+        { id: 'contractSignDateMonth', label: 'วันที่ทำสัญญา (เดือน)' },
+        { id: 'contractSignDateYear', label: 'วันที่ทำสัญญา (ปี พ.ศ.)' },
+        { id: 'newStartDateDay', label: 'วันเริ่มสัญญา (วัน)' },
+        { id: 'newStartDateMonth', label: 'วันเริ่มสัญญา (เดือน)' },
+        { id: 'newStartDateYear', label: 'วันเริ่มสัญญา (ปี พ.ศ.)' },
+        { id: 'newEndDateDay', label: 'วันสิ้นสุดสัญญา (วัน)' },
+        { id: 'newEndDateMonth', label: 'วันสิ้นสุดสัญญา (เดือน)' },
+        { id: 'newEndDateYear', label: 'วันสิ้นสุดสัญญา (ปี พ.ศ.)' },
         { id: 'authorityName', label: 'ชื่อผู้ว่าจ้าง (ผู้มีอำนาจลงนาม)' },
         { id: 'authorityPosition', label: 'ตำแหน่งผู้ว่าจ้าง' },
         { id: 'empSignPosition', label: 'ตำแหน่งพนักงานราชการ (ใต้ช่องลงนาม)' },
@@ -1433,9 +1947,9 @@
       const errors = [];
       requiredFields.forEach(f => {
         const el = document.getElementById(f.id);
-        const val = el ? el.value.trim() : '';
+        const val = el ? String(el.value).trim() : '';
         if (!val) {
-          errors.push(`กรุณากรอกข้อมูล "${f.label}"`);
+          errors.push(`กรุณากรอกหรือเลือกข้อมูล "${f.label}"`);
           if (el) el.setAttribute('aria-invalid', 'true');
         } else {
           if (el) el.setAttribute('aria-invalid', 'false');
@@ -1448,11 +1962,11 @@
         document.getElementById('nationalId').setAttribute('aria-invalid', 'true');
       }
 
-      const startVal = document.getElementById('newStartDate').value;
-      const endVal = document.getElementById('newEndDate').value;
-      if (startVal && endVal && new Date(endVal) < new Date(startVal)) {
-        errors.push('วันที่สิ้นสุดสัญญาต้องไม่น้อยกว่าวันที่เริ่มต้นสัญญา');
-        document.getElementById('newEndDate').setAttribute('aria-invalid', 'true');
+      const startIso = getIsoDateFromSelectors('newStartDateDay', 'newStartDateMonth', 'newStartDateYear');
+      const endIso = getIsoDateFromSelectors('newEndDateDay', 'newEndDateMonth', 'newEndDateYear');
+      if (startIso && endIso && new Date(endIso) < new Date(startIso)) {
+        errors.push('วันที่สิ้นสุดสัญญาใหม่ต้องไม่น้อยกว่าวันที่เริ่มต้นสัญญา');
+        document.getElementById('newEndDateYear').setAttribute('aria-invalid', 'true');
       }
 
       const banner = document.getElementById('validationBanner');
@@ -1467,6 +1981,61 @@
 
       banner.classList.add('hidden');
       return true;
+    }
+
+    function collectCurrentFormRecord() {
+      const signDateIso = getIsoDateFromSelectors('contractSignDateDay', 'contractSignDateMonth', 'contractSignDateYear');
+      const newStartDateIso = getIsoDateFromSelectors('newStartDateDay', 'newStartDateMonth', 'newStartDateYear');
+      const newEndDateIso = getIsoDateFromSelectors('newEndDateDay', 'newEndDateMonth', 'newEndDateYear');
+      const birthDateIso = getIsoDateFromSelectors('birthDateDay', 'birthDateMonth', 'birthDateYear');
+      const dur = calculateContractDuration(newStartDateIso, newEndDateIso);
+      const durationText = dur.valid
+        ? `${toThaiDigits(dur.years)} ปี ${toThaiDigits(dur.months)} เดือน ${toThaiDigits(dur.days)} วัน`
+        : '-';
+
+      return {
+        id: 'REC-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
+        createdAt: new Date().toLocaleString('th-TH'),
+        isSample: isSampleDataActive,
+        contractSeqNo: document.getElementById('contractSeqNo').value.trim(),
+        contractCalendarYear: document.getElementById('contractCalendarYear').value.trim(),
+        contractNo: getFormattedContractNoThai(),
+        prefix: document.getElementById('prefix').value.trim(),
+        fullName: document.getElementById('fullName').value.trim(),
+        nationalId: document.getElementById('nationalId').value.trim(),
+        birthDateIso: birthDateIso,
+        ageYears: document.getElementById('ageYears').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        addrNo: document.getElementById('addrNo').value.trim() || '-',
+        addrRoad: document.getElementById('addrRoad').value.trim() || '-',
+        addrSoi: document.getElementById('addrSoi').value.trim() || '-',
+        addrSubdistrict: document.getElementById('addrSubdistrict').value.trim() || '-',
+        addrDistrict: document.getElementById('addrDistrict').value.trim() || '-',
+        addrProvince: document.getElementById('addrProvince').value.trim() || '-',
+        addrZip: document.getElementById('addrZip').value.trim() || '-',
+        departmentName: document.getElementById('departmentName').value.trim(),
+        bureau: bureauSelectEl.value.trim(),
+        subUnit: subUnitSelectEl.value.trim(),
+        divisionName: getCombinedAffiliationText(),
+        empType: document.getElementById('empType').value,
+        jobGroup: document.getElementById('jobGroup').value.trim(),
+        positionTitle: document.getElementById('positionTitle').value.trim(),
+        salaryAmount: Number(document.getElementById('salaryAmount').value || 0),
+        signDateIso: signDateIso,
+        newStartDateIso: newStartDateIso,
+        newEndDateIso: newEndDateIso,
+        startDateThai: formatOfficialThaiDateFromIso(newStartDateIso),
+        endDateThai: formatOfficialThaiDateFromIso(newEndDateIso),
+        durationText: durationText,
+        authorityName: document.getElementById('authorityName').value.trim(),
+        authorityPosition: document.getElementById('authorityPosition').value.trim(),
+        empSignPosition: document.getElementById('empSignPosition').value.trim(),
+        witness1Name: document.getElementById('witness1Name').value.trim(),
+        witness1Position: document.getElementById('witness1Position').value.trim(),
+        witness2Name: document.getElementById('witness2Name').value.trim(),
+        witness2Position: document.getElementById('witness2Position').value.trim()
+      };
     }
 
     function populateContractPreview() {
@@ -1489,7 +2058,7 @@
       const addrZip = document.getElementById('addrZip').value || '-';
 
       const deptName = document.getElementById('departmentName').value || 'กรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ';
-      const divisionName = document.getElementById('divisionName').value || '-';
+      const divisionName = getCombinedAffiliationText();
       const empType = document.getElementById('empType').value;
       const jobGroup = document.getElementById('jobGroup').value || '-';
       const positionTitle = document.getElementById('positionTitle').value || '-';
@@ -1498,9 +2067,9 @@
       const salaryWords = numberToThaiBahtText(salaryRaw) || '-';
 
       const contractNoThai = getFormattedContractNoThai();
-      const signDate = document.getElementById('contractSignDate').value;
-      const newStartDate = document.getElementById('newStartDate').value;
-      const newEndDate = document.getElementById('newEndDate').value;
+      const signDateIso = getIsoDateFromSelectors('contractSignDateDay', 'contractSignDateMonth', 'contractSignDateYear');
+      const newStartDateIso = getIsoDateFromSelectors('newStartDateDay', 'newStartDateMonth', 'newStartDateYear');
+      const newEndDateIso = getIsoDateFromSelectors('newEndDateDay', 'newEndDateMonth', 'newEndDateYear');
 
       const authorityName = document.getElementById('authorityName').value || '...............................................';
       const authorityPosition = document.getElementById('authorityPosition').value || 'อธิบดีกรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ';
@@ -1510,11 +2079,10 @@
       const witness2Name = document.getElementById('witness2Name').value || '...............................................';
       const witness2Position = document.getElementById('witness2Position').value || 'ผู้อำนวยการกลุ่มบริหารทรัพยากรบุคคล';
 
-      // Set Contract Header & Preamble (ทุกตัวเลขแปลงเป็นเลขไทยทั้งหมด)
       document.getElementById('docContractNo').textContent = contractNoThai;
       document.getElementById('docHeaderDept').textContent = fmtThai(deptName);
       document.getElementById('docMadeAtDept').textContent = fmtThai(deptName);
-      document.getElementById('docSignDate').textContent = formatOfficialThaiDate(signDate);
+      document.getElementById('docSignDate').textContent = formatOfficialThaiDateFromIso(signDateIso);
       document.getElementById('docEmployerDept').textContent = fmtThai(deptName);
       document.getElementById('docAuthorityName').textContent = fmtThai(authorityName);
       document.getElementById('docAuthorityPos').textContent = fmtThai(authorityPosition);
@@ -1531,7 +2099,6 @@
       document.getElementById('docAddrZip').textContent = fmtThai(addrZip);
       document.getElementById('docEmpPhone').textContent = fmtThai(phone);
 
-      // ข้อ ๑: ประเภทพนักงานราชการ กลุ่มงาน และตำแหน่ง (ไม่มีเลขที่ตำแหน่ง)
       if (empType === 'พิเศษ') {
         document.getElementById('chkSpecial').textContent = '✓';
         document.getElementById('chkGeneral').textContent = '';
@@ -1558,14 +2125,14 @@
       document.getElementById('annexAGroup').textContent = fmtThai(jobGroup);
       document.getElementById('annexADivision').textContent = fmtThai(divisionName);
 
-      // ข้อ ๓: คำนวณจำนวนปีและเดือนอัตโนมัติจากวันเริ่มและวันสิ้นสุด
-      const dur = calculateContractDuration(newStartDate, newEndDate);
+      // ข้อ ๓: คำนวณ ปี เดือน วัน อัตโนมัติ
+      const dur = calculateContractDuration(newStartDateIso, newEndDateIso);
       document.getElementById('docDurationYears').textContent = dur.valid ? toThaiDigits(dur.years) : '-';
-      document.getElementById('docDurationMonths').textContent =
-        (dur.valid && dur.months > 0) ? toThaiDigits(dur.months) : '-';
+      document.getElementById('docDurationMonths').textContent = dur.valid ? toThaiDigits(dur.months) : '-';
+      document.getElementById('docDurationDays').textContent = dur.valid ? toThaiDigits(dur.days) : '-';
 
-      const startComp = parseDateComponents(newStartDate);
-      const endComp = parseDateComponents(newEndDate);
+      const startComp = parseDateComponents(newStartDateIso);
+      const endComp = parseDateComponents(newEndDateIso);
 
       document.getElementById('docNewStartDay').textContent = startComp ? toThaiDigits(startComp.day) : '......';
       document.getElementById('docNewStartMonth').textContent = startComp ? startComp.monthName : '....................';
@@ -1579,7 +2146,7 @@
       document.getElementById('docSalaryNumber').textContent = toThaiDigits(salaryFormatted);
       document.getElementById('docSalaryWords').textContent = salaryWords;
 
-      // ช่องลงลายมือชื่อและตำแหน่งทั้ง 4 ฝ่าย (แปลงตัวเลขในตำแหน่งเป็นเลขไทยด้วยถ้ามี)
+      // ลงลายมือชื่อทั้ง 4 ฝ่าย
       document.getElementById('sigAuthorityName').textContent = fmtThai(authorityName);
       document.getElementById('sigAuthorityPos').textContent = fmtThai(authorityPosition);
       document.getElementById('sigEmpName').textContent = fmtThai(fullPersonName);
@@ -1589,49 +2156,547 @@
       document.getElementById('sigWitness2Name').textContent = fmtThai(witness2Name);
       document.getElementById('sigWitness2Pos').textContent = fmtThai(witness2Position);
 
-      // Summary Cards above A4 preview
+      // สรุปข้อมูลด้านบนพรีวิว
       document.getElementById('summaryEmployee').textContent = fmtThai(fullPersonName);
       document.getElementById('summaryPosition').textContent =
         fmtThai(`ตำแหน่ง ${positionTitle} | กลุ่มงาน${jobGroup} (${divisionName})`);
       const durText = dur.valid
-        ? `${toThaiDigits(dur.years)} ปี ${dur.months > 0 ? toThaiDigits(dur.months) + ' เดือน' : ''}`
+        ? `${toThaiDigits(dur.years)} ปี ${toThaiDigits(dur.months)} เดือน ${toThaiDigits(dur.days)} วัน`
         : '-';
       document.getElementById('summaryNewContract').textContent =
         `สัญญาเลขที่ ${contractNoThai} (กำหนด ${durText})`;
       document.getElementById('summaryPeriod').textContent =
-        `${formatOfficialThaiDate(newStartDate)} ถึง ${formatOfficialThaiDate(newEndDate)}`;
+        `${formatOfficialThaiDateFromIso(newStartDateIso)} ถึง ${formatOfficialThaiDateFromIso(newEndDateIso)}`;
       document.getElementById('summarySalary').textContent =
         `${toThaiDigits(salaryFormatted)} บาท/เดือน (${salaryWords})`;
       document.getElementById('summarySignatories').textContent =
         fmtThai(`ผู้ว่าจ้าง: ${authorityName} | พยาน ๒ คน`);
     }
 
-    // View switching
+    // =========================================================================
+    // 9. ระบบฐานข้อมูลสัญญาจ้าง (In-Memory + LocalStorage + Google Sheets GAS)
+    // =========================================================================
+    const DEFAULT_GAS_URL = 'https://script.google.com/macros/s/AKfycbyDW0xl948ds4pLCApTPPhYyF13pAqHMXOqta-4mw2ytz6TKVmj6URZ6DPkFfel2NoH/exec';
+    let contractRecords = [];
+    let gasWebAppUrl = DEFAULT_GAS_URL;
+
+    function loadSavedState() {
+      try {
+        const savedRecords = localStorage.getItem('dep_contract_records_v1');
+        if (savedRecords) {
+          contractRecords = JSON.parse(savedRecords);
+        }
+        const savedUrl = localStorage.getItem('dep_gas_webapp_url_v1');
+        if (savedUrl) {
+          gasWebAppUrl = savedUrl;
+        } else {
+          gasWebAppUrl = DEFAULT_GAS_URL;
+        }
+        document.getElementById('gasWebAppUrl').value = gasWebAppUrl;
+        updateGasBadge();
+      } catch (e) {
+        // Ignore storage restrictions in sandbox
+        gasWebAppUrl = DEFAULT_GAS_URL;
+        document.getElementById('gasWebAppUrl').value = DEFAULT_GAS_URL;
+        updateGasBadge();
+      }
+      renderAdminDashboard();
+      // ซิงค์ข้อมูลล่าสุดจาก Google Sheets เมื่อเปิดหน้าเว็บ
+      if (gasWebAppUrl) {
+        syncFromGoogleSheets(true);
+      }
+    }
+
+    function persistRecords() {
+      try {
+        localStorage.setItem('dep_contract_records_v1', JSON.stringify(contractRecords));
+      } catch (e) {}
+    }
+
+    function updateGasBadge() {
+      const badge = document.getElementById('gasConnBadge');
+      if (gasWebAppUrl) {
+        badge.textContent = 'เชื่อมต่อ Google Sheets (GAS) พร้อมใช้งาน';
+        badge.className = 'px-2.5 py-0.5 text-xs font-semibold rounded-full bg-emerald-500 text-white';
+      } else {
+        badge.textContent = 'โหมดบันทึกในระบบ (พร้อมเชื่อมต่อ Google Sheets)';
+        badge.className = 'px-2.5 py-0.5 text-xs font-semibold rounded-full bg-white/15 text-blue-100';
+      }
+    }
+
+    async function saveAndSendContractRecord(record) {
+      // 1. บันทึกลงรายการในระบบ (หากเลขบัตรประชาชนซ้ำ ให้อัปเดตทับรายการเดิม หรือเพิ่มใหม่)
+      const existingIdx = contractRecords.findIndex(r => r.nationalId === record.nationalId && r.contractNo === record.contractNo);
+      if (existingIdx >= 0) {
+        contractRecords[existingIdx] = record;
+      } else {
+        contractRecords.unshift(record);
+      }
+      persistRecords();
+      renderAdminDashboard();
+
+      // 2. หากตั้งค่า Google Apps Script URL ไว้ ให้ส่งข้อมูลไปบันทึกลง Google Sheets อัตโนมัติ
+      if (gasWebAppUrl) {
+        const statusMsg = document.getElementById('gasStatusMsg');
+        statusMsg.textContent = 'กำลังส่งข้อมูลสัญญาไปบันทึกลง Google Sheets...';
+        try {
+          await fetch(gasWebAppUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(record)
+          });
+          statusMsg.textContent = `ส่งข้อมูลของ "${record.prefix}${record.fullName}" ไปยัง Google Sheets เรียบร้อยแล้ว (${new Date().toLocaleTimeString('th-TH')})`;
+        } catch (err) {
+          statusMsg.textContent = 'บันทึกในระบบแล้ว (ไม่สามารถส่งไป Google Sheets ได้ กรุณาตรวจสอบ Web App URL)';
+        }
+      }
+    }
+
+    // =========================================================================
+    // 10. ระบบแสดงผล Admin Dashboard (KPIs, แจกแจง 7 กอง, ตารางรายชื่อ)
+    // =========================================================================
+    function renderAdminDashboard() {
+      const totalBadge = document.getElementById('adminTotalBadge');
+      totalBadge.textContent = contractRecords.length;
+
+      const hasSample = contractRecords.some(r => r.isSample);
+      document.getElementById('dashSampleTag').classList.toggle('hidden', !hasSample);
+
+      // 1. คำนวณ KPI
+      const totalCount = contractRecords.length;
+      const genCount = contractRecords.filter(r => r.empType === 'ทั่วไป').length;
+      const specCount = contractRecords.filter(r => r.empType === 'พิเศษ').length;
+      const totalSalary = contractRecords.reduce((sum, r) => sum + (Number(r.salaryAmount) || 0), 0);
+      const avgSalary = totalCount > 0 ? Math.round(totalSalary / totalCount) : 0;
+
+      const activeBureausSet = new Set(contractRecords.map(r => r.bureau).filter(Boolean));
+      const activeSubUnitsSet = new Set(contractRecords.map(r => `${r.bureau}|${r.subUnit}`).filter(s => s !== '|'));
+
+      document.getElementById('kpiTotalCount').textContent = totalCount.toLocaleString('th-TH');
+      document.getElementById('kpiEmpTypeSplit').textContent = `พนักงานราชการทั่วไป ${genCount} คน • พิเศษ ${specCount} คน`;
+      document.getElementById('kpiActiveBureaus').textContent = activeBureausSet.size;
+      document.getElementById('kpiActiveSubUnits').textContent = `ครอบคลุม ${activeSubUnitsSet.size} หน่วยงานย่อย`;
+      document.getElementById('kpiTotalSalary').textContent = totalSalary.toLocaleString('th-TH');
+      document.getElementById('kpiAvgSalary').textContent = `เฉลี่ย ${avgSalary.toLocaleString('th-TH')} บาท/คน/เดือน`;
+
+      // กลุ่มงานที่มีคนมากที่สุด
+      const groupCounts = {};
+      contractRecords.forEach(r => {
+        const g = r.jobGroup || 'ไม่ระบุ';
+        groupCounts[g] = (groupCounts[g] || 0) + 1;
+      });
+      const sortedGroups = Object.entries(groupCounts).sort((a, b) => b[1] - a[1]);
+      if (sortedGroups.length > 0) {
+        document.getElementById('kpiTopJobGroup').textContent = `กลุ่มงาน${sortedGroups[0][0]}`;
+        document.getElementById('kpiTopJobGroupCount').textContent = `จำนวน ${sortedGroups[0][1]} คน (${Math.round((sortedGroups[0][1] / totalCount) * 100)}% ของทั้งหมด)`;
+      } else {
+        document.getElementById('kpiTopJobGroup').textContent = '-';
+        document.getElementById('kpiTopJobGroupCount').textContent = 'ยังไม่มีข้อมูลในระบบ';
+      }
+
+      // 2. แจกแจงรายสำนัก/กอง (ครบทั้ง 7 กอง)
+      const bureauContainer = document.getElementById('bureauBreakdownList');
+      bureauContainer.innerHTML = '';
+      ALL_BUREAUS.forEach((bureauName, idx) => {
+        const inBureau = contractRecords.filter(r => r.bureau === bureauName);
+        const count = inBureau.length;
+        const pct = totalCount > 0 ? Math.round((count / totalCount) * 100) : 0;
+
+        // นับแยกตามหน่วยงานย่อยภายในกองนั้น
+        const subMap = {};
+        inBureau.forEach(r => {
+          if (r.subUnit) subMap[r.subUnit] = (subMap[r.subUnit] || 0) + 1;
+        });
+        const subSummary = Object.entries(subMap).map(([u, c]) => `${u} (${c})`).join(' • ');
+
+        const item = document.createElement('div');
+        item.className = 'p-3 rounded-lg border border-slate-200 bg-slate-50/70';
+        item.innerHTML = `
+          <div class="flex items-center justify-between text-xs sm:text-sm font-bold text-slate-800">
+            <span>${idx + 1}. ${bureauName}</span>
+            <span class="${count > 0 ? 'text-brand-navy' : 'text-slate-400'}">${count} คน (${pct}%)</span>
+          </div>
+          <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden mt-1.5">
+            <div class="h-full bg-brand-blue transition-all duration-300" style="width: ${pct}%"></div>
+          </div>
+          ${subSummary ? `<p class="text-[11px] text-slate-600 mt-1.5">${subSummary}</p>` : '<p class="text-[11px] text-slate-400 mt-1">ยังไม่มีผู้ส่งข้อมูลในสำนัก/กองนี้</p>'}
+        `;
+        bureauContainer.appendChild(item);
+      });
+
+      // 3. แจกแจงตามกลุ่มงานและตำแหน่ง
+      const jobGroupContainer = document.getElementById('jobGroupBreakdownList');
+      jobGroupContainer.innerHTML = '';
+      if (totalCount === 0) {
+        jobGroupContainer.innerHTML = `
+          <div class="text-center py-8 text-slate-400 text-sm">
+            ยังไม่มีข้อมูลการทำสัญญาจ้าง<br>
+            <span class="text-xs">เมื่อมีผู้กรอกสัญญาหรือกดปุ่มโหลดข้อมูลตัวอย่าง ข้อมูลสรุปจะแสดงที่นี่</span>
+          </div>
+        `;
+      } else {
+        const posCounts = {};
+        contractRecords.forEach(r => {
+          const key = `${r.positionTitle} (กลุ่มงาน${r.jobGroup})`;
+          posCounts[key] = (posCounts[key] || 0) + 1;
+        });
+        Object.entries(posCounts).sort((a, b) => b[1] - a[1]).forEach(([posLabel, cnt]) => {
+          const row = document.createElement('div');
+          row.className = 'flex items-center justify-between p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs sm:text-sm';
+          row.innerHTML = `
+            <span class="font-semibold text-slate-800">${posLabel}</span>
+            <span class="px-2.5 py-0.5 rounded-full bg-blue-100 text-brand-navy font-bold">${cnt} คน</span>
+          `;
+          jobGroupContainer.appendChild(row);
+        });
+      }
+
+      // 4. ตารางรายชื่อผู้ทำสัญญาจ้าง (พร้อมตัวกรอง)
+      const searchQ = (document.getElementById('adminSearchInput').value || '').trim().toLowerCase();
+      const filterBureau = document.getElementById('adminBureauFilter').value;
+
+      const filtered = contractRecords.filter(r => {
+        if (filterBureau && r.bureau !== filterBureau) return false;
+        if (searchQ) {
+          const hay = `${r.contractNo} ${r.prefix}${r.fullName} ${r.nationalId} ${r.bureau} ${r.subUnit} ${r.positionTitle} ${r.jobGroup}`.toLowerCase();
+          return hay.includes(searchQ);
+        }
+        return true;
+      });
+
+      const tbody = document.getElementById('adminTableBody');
+      tbody.innerHTML = '';
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="py-10 text-center text-slate-500">
+              ยังไม่มีรายการผู้ทำสัญญาจ้างที่ตรงกับเงื่อนไข — สามารถกรอกข้อมูลที่แท็บ 1 หรือกดปุ่ม <strong>"+ โหลดข้อมูลตัวอย่างเข้า Dashboard"</strong> ด้านบนเพื่อทดสอบระบบผู้ดูแล
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      filtered.forEach(rec => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50 transition';
+        tr.innerHTML = `
+          <td class="py-3 px-4 font-bold text-brand-navy whitespace-nowrap">
+            ${rec.contractNo}
+            ${rec.isSample ? '<span class="block text-[10px] font-semibold text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded w-fit mt-0.5">Sample</span>' : ''}
+          </td>
+          <td class="py-3 px-4">
+            <div class="font-bold text-slate-900">${rec.prefix}${rec.fullName}</div>
+            <div class="text-xs text-slate-500 font-mono">${rec.nationalId}</div>
+          </td>
+          <td class="py-3 px-4">
+            <div class="font-semibold text-slate-800">${rec.bureau}</div>
+            <div class="text-xs text-brand-blue">${rec.subUnit}</div>
+          </td>
+          <td class="py-3 px-4">
+            <div class="font-semibold text-slate-800">${rec.positionTitle}</div>
+            <div class="text-xs text-slate-500">พนักงานราชการ${rec.empType} • กลุ่มงาน${rec.jobGroup}</div>
+          </td>
+          <td class="py-3 px-4 text-right font-bold text-emerald-700 whitespace-nowrap">
+            ${Number(rec.salaryAmount).toLocaleString('th-TH')}
+          </td>
+          <td class="py-3 px-4 text-xs text-slate-700">
+            <div class="font-semibold">${rec.durationText}</div>
+            <div class="text-slate-500">${rec.startDateThai} - ${rec.endDateThai}</div>
+          </td>
+          <td class="py-3 px-4 text-center whitespace-nowrap">
+            <div class="inline-flex items-center gap-1.5">
+              <button type="button" data-view-id="${rec.id}" class="btn-view-rec px-2.5 py-1 rounded bg-brand-navy hover:bg-blue-900 text-white text-xs font-semibold cursor-pointer">
+                ดูสัญญา A4
+              </button>
+              <button type="button" data-del-id="${rec.id}" class="btn-del-rec px-2 py-1 rounded bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-semibold cursor-pointer">
+                ลบ
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // ผูกปุ่มดูสัญญา A4 และปุ่มลบในตาราง
+      tbody.querySelectorAll('.btn-view-rec').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const id = this.getAttribute('data-view-id');
+          const rec = contractRecords.find(r => r.id === id);
+          if (rec) {
+            loadRecordIntoFormAndPreview(rec);
+          }
+        });
+      });
+
+      tbody.querySelectorAll('.btn-del-rec').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const id = this.getAttribute('data-del-id');
+          contractRecords = contractRecords.filter(r => r.id !== id);
+          persistRecords();
+          renderAdminDashboard();
+        });
+      });
+    }
+
+    function loadRecordIntoFormAndPreview(rec) {
+      isSampleDataActive = !!rec.isSample;
+      empSignPosManuallyEdited = true;
+
+      document.getElementById('prefix').value = rec.prefix || '';
+      document.getElementById('fullName').value = rec.fullName || '';
+      document.getElementById('nationalId').value = rec.nationalId || '';
+      setSelectorsFromIsoDate('birthDateDay', 'birthDateMonth', 'birthDateYear', rec.birthDateIso || '1993-04-15');
+      document.getElementById('ageYears').value = rec.ageYears || '31';
+      document.getElementById('phone').value = rec.phone || '';
+      document.getElementById('email').value = rec.email || '';
+
+      document.getElementById('addrNo').value = rec.addrNo || '-';
+      document.getElementById('addrRoad').value = rec.addrRoad || '-';
+      document.getElementById('addrSoi').value = rec.addrSoi || '-';
+      document.getElementById('addrSubdistrict').value = rec.addrSubdistrict || '-';
+      document.getElementById('addrDistrict').value = rec.addrDistrict || '-';
+      document.getElementById('addrProvince').value = rec.addrProvince || '-';
+      document.getElementById('addrZip').value = rec.addrZip || '-';
+
+      document.getElementById('departmentName').value = rec.departmentName || 'กรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ';
+      bureauSelectEl.value = rec.bureau || '';
+      populateSubUnitDropdown(rec.bureau || '', rec.subUnit || '');
+
+      document.getElementById('empType').value = rec.empType || 'ทั่วไป';
+      document.getElementById('jobGroup').value = rec.jobGroup || '';
+      document.getElementById('positionTitle').value = rec.positionTitle || '';
+      document.getElementById('salaryAmount').value = rec.salaryAmount || 0;
+
+      document.getElementById('contractSeqNo').value = rec.contractSeqNo || '001';
+      document.getElementById('contractCalendarYear').value = rec.contractCalendarYear || currentYearBE;
+      setSelectorsFromIsoDate('contractSignDateDay', 'contractSignDateMonth', 'contractSignDateYear', rec.signDateIso || '2025-01-01');
+      setSelectorsFromIsoDate('newStartDateDay', 'newStartDateMonth', 'newStartDateYear', rec.newStartDateIso || '2024-10-01');
+      setSelectorsFromIsoDate('newEndDateDay', 'newEndDateMonth', 'newEndDateYear', rec.newEndDateIso || '2028-09-30');
+
+      document.getElementById('authorityName').value = rec.authorityName || '';
+      document.getElementById('authorityPosition').value = rec.authorityPosition || '';
+      document.getElementById('empSignPosition').value = rec.empSignPosition || `ตำแหน่ง ${rec.positionTitle}`;
+      document.getElementById('witness1Name').value = rec.witness1Name || '';
+      document.getElementById('witness1Position').value = rec.witness1Position || '';
+      document.getElementById('witness2Name').value = rec.witness2Name || '';
+      document.getElementById('witness2Position').value = rec.witness2Position || '';
+
+      updateContractNoPreview();
+      updateSalaryTextPreview();
+      updateAllDatePreviews();
+      document.getElementById('sampleBadgeInPreview').classList.toggle('hidden', !rec.isSample);
+      switchView('preview');
+    }
+
+    // ปุ่มโหลดข้อมูลตัวอย่างเข้า Admin Dashboard เพื่อดูการแจกแจงรายสำนัก/กอง
+    document.getElementById('btnLoadSampleDashboard').addEventListener('click', function() {
+      const sampleBatch = [
+        {
+          id: 'SMP-1', isSample: true,
+          contractSeqNo: '001', contractCalendarYear: '2568', contractNo: '๐๐๑/๒๕๖๘',
+          prefix: 'นางสาว', fullName: 'กานต์พิชชา พัฒนากุล', nationalId: '1-1005-01284-59-2',
+          birthDateIso: '1993-04-15', ageYears: '31', phone: '089-456-7890', email: 'kanpitcha.p@dep.go.th',
+          addrNo: '255/18', addrRoad: 'พระรามที่ 6', addrSoi: 'ราชวิถี 7', addrSubdistrict: 'ทุ่งพญาไท', addrDistrict: 'ราชเทวี', addrProvince: 'กรุงเทพมหานคร', addrZip: '10400',
+          departmentName: 'กรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ',
+          bureau: 'สำนักงานเลขานุการกรม', subUnit: 'กลุ่มบริหารทรัพยากรบุคคล',
+          divisionName: 'กลุ่มบริหารทรัพยากรบุคคล สำนักงานเลขานุการกรม',
+          empType: 'ทั่วไป', jobGroup: 'บริหารทั่วไป', positionTitle: 'นักทรัพยากรบุคคล', salaryAmount: 18000,
+          signDateIso: '2025-01-01', newStartDateIso: '2024-10-01', newEndDateIso: '2028-09-30',
+          startDateThai: '๑ ตุลาคม ๒๕๖๗', endDateThai: '๓๐ กันยายน ๒๕๗๑', durationText: '๔ ปี ๐ เดือน ๐ วัน',
+          authorityName: 'นายโชคชัย วิเชียรชัยยะ', authorityPosition: 'อธิบดีกรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ',
+          empSignPosition: 'ตำแหน่ง นักทรัพยากรบุคคล',
+          witness1Name: 'นางสาวศิริพร วงศ์สวัสดิ์', witness1Position: 'นักทรัพยากรบุคคลชำนาญการพิเศษ',
+          witness2Name: 'นายพงศ์พัฒน์ เกียรติเจริญ', witness2Position: 'ผู้อำนวยการกลุ่มบริหารทรัพยากรบุคคล'
+        },
+        {
+          id: 'SMP-2', isSample: true,
+          contractSeqNo: '002', contractCalendarYear: '2568', contractNo: '๐๐๒/๒๕๖๘',
+          prefix: 'นาย', fullName: 'ธนภัทร ศรีสุวรรณ', nationalId: '1-1014-00892-14-5',
+          birthDateIso: '1991-08-20', ageYears: '33', phone: '081-982-3344', email: 'thanapat.s@dep.go.th',
+          addrNo: '88/4', addrRoad: 'แจ้งวัฒนะ', addrSoi: '-', addrSubdistrict: 'ตลาดบางเขน', addrDistrict: 'หลักสี่', addrProvince: 'กรุงเทพมหานคร', addrZip: '10210',
+          departmentName: 'กรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ',
+          bureau: 'กองยุทธศาสตร์และแผนงาน', subUnit: 'ศูนย์ข้อมูลคนพิการและเทคโนโลยีสารสนเทศ',
+          divisionName: 'ศูนย์ข้อมูลคนพิการและเทคโนโลยีสารสนเทศ กองยุทธศาสตร์และแผนงาน',
+          empType: 'ทั่วไป', jobGroup: 'วิชาชีพเฉพาะ', positionTitle: 'นักวิชาการคอมพิวเตอร์', salaryAmount: 19500,
+          signDateIso: '2025-01-01', newStartDateIso: '2024-10-01', newEndDateIso: '2028-09-30',
+          startDateThai: '๑ ตุลาคม ๒๕๖๗', endDateThai: '๓๐ กันยายน ๒๕๗๑', durationText: '๔ ปี ๐ เดือน ๐ วัน',
+          authorityName: 'นายโชคชัย วิเชียรชัยยะ', authorityPosition: 'อธิบดีกรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ',
+          empSignPosition: 'ตำแหน่ง นักวิชาการคอมพิวเตอร์',
+          witness1Name: 'นางสาวศิริพร วงศ์สวัสดิ์', witness1Position: 'นักทรัพยากรบุคคลชำนาญการพิเศษ',
+          witness2Name: 'นายพงศ์พัฒน์ เกียรติเจริญ', witness2Position: 'ผู้อำนวยการกลุ่มบริหารทรัพยากรบุคคล'
+        },
+        {
+          id: 'SMP-3', isSample: true,
+          contractSeqNo: '003', contractCalendarYear: '2568', contractNo: '๐๐๓/๒๕๖๘',
+          prefix: 'นาง', fullName: 'ชลธิชา อินทร์ประเสริฐ', nationalId: '3-1201-00451-28-9',
+          birthDateIso: '1989-11-05', ageYears: '35', phone: '086-312-9001', email: 'chonticha.i@dep.go.th',
+          addrNo: '78/9', addrRoad: 'ติวานนท์', addrSoi: '-', addrSubdistrict: 'บางตลาด', addrDistrict: 'ปากเกร็ด', addrProvince: 'นนทบุรี', addrZip: '11120',
+          departmentName: 'กรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ',
+          bureau: 'กองคุ้มครองสวัสดิภาพและพัฒนาคนพิการ', subUnit: 'สถานคุ้มครองและพัฒนาคนพิการบ้านเฟื่องฟ้า จังหวัดนนทบุรี',
+          divisionName: 'สถานคุ้มครองและพัฒนาคนพิการบ้านเฟื่องฟ้า จังหวัดนนทบุรี กองคุ้มครองสวัสดิภาพและพัฒนาคนพิการ',
+          empType: 'ทั่วไป', jobGroup: 'บริหารทั่วไป', positionTitle: 'นักพัฒนาสังคม', salaryAmount: 18000,
+          signDateIso: '2025-01-01', newStartDateIso: '2024-10-01', newEndDateIso: '2028-09-30',
+          startDateThai: '๑ ตุลาคม ๒๕๖๗', endDateThai: '๓๐ กันยายน ๒๕๗๑', durationText: '๔ ปี ๐ เดือน ๐ วัน',
+          authorityName: 'นายโชคชัย วิเชียรชัยยะ', authorityPosition: 'อธิบดีกรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ',
+          empSignPosition: 'ตำแหน่ง นักพัฒนาสังคม',
+          witness1Name: 'นางสาวศิริพร วงศ์สวัสดิ์', witness1Position: 'นักทรัพยากรบุคคลชำนาญการพิเศษ',
+          witness2Name: 'นายพงศ์พัฒน์ เกียรติเจริญ', witness2Position: 'ผู้อำนวยการกลุ่มบริหารทรัพยากรบุคคล'
+        },
+        {
+          id: 'SMP-4', isSample: true,
+          contractSeqNo: '004', contractCalendarYear: '2568', contractNo: '๐๐๔/๒๕๖๘',
+          prefix: 'นาย', fullName: 'กิตติพงศ์ วัฒนชัย', nationalId: '1-1007-02319-44-1',
+          birthDateIso: '1994-02-12', ageYears: '30', phone: '082-771-5520', email: 'kittipong.w@dep.go.th',
+          addrNo: '42', addrRoad: 'พหลโยธิน', addrSoi: 'พหลโยธิน 24', addrSubdistrict: 'จอมพล', addrDistrict: 'จตุจักร', addrProvince: 'กรุงเทพมหานคร', addrZip: '10900',
+          departmentName: 'กรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ',
+          bureau: 'กองกองทุนและส่งเสริมความเสมอภาคคนพิการ', subUnit: 'กลุ่มบริหารกองทุน',
+          divisionName: 'กลุ่มบริหารกองทุน กองกองทุนและส่งเสริมความเสมอภาคคนพิการ',
+          empType: 'ทั่วไป', jobGroup: 'บริหารทั่วไป', positionTitle: 'นักวิชาการเงินและบัญชี', salaryAmount: 18000,
+          signDateIso: '2025-01-01', newStartDateIso: '2024-10-01', newEndDateIso: '2028-09-30',
+          startDateThai: '๑ ตุลาคม ๒๕๖๗', endDateThai: '๓๐ กันยายน ๒๕๗๑', durationText: '๔ ปี ๐ เดือน ๐ วัน',
+          authorityName: 'นายโชคชัย วิเชียรชัยยะ', authorityPosition: 'อธิบดีกรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ',
+          empSignPosition: 'ตำแหน่ง นักวิชาการเงินและบัญชี',
+          witness1Name: 'นางสาวศิริพร วงศ์สวัสดิ์', witness1Position: 'นักทรัพยากรบุคคลชำนาญการพิเศษ',
+          witness2Name: 'นายพงศ์พัฒน์ เกียรติเจริญ', witness2Position: 'ผู้อำนวยการกลุ่มบริหารทรัพยากรบุคคล'
+        },
+        {
+          id: 'SMP-5', isSample: true,
+          contractSeqNo: '005', contractCalendarYear: '2568', contractNo: '๐๐๕/๒๕๖๘',
+          prefix: 'นางสาว', fullName: 'ปวีณา สายชล', nationalId: '1-5099-01120-31-7',
+          birthDateIso: '1995-06-18', ageYears: '29', phone: '084-119-8877', email: 'paweena.s@dep.go.th',
+          addrNo: '199', addrRoad: 'โชตนา', addrSoi: '-', addrSubdistrict: 'ช้างเผือก', addrDistrict: 'เมืองเชียงใหม่', addrProvince: 'เชียงใหม่', addrZip: '50300',
+          departmentName: 'กรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ',
+          bureau: 'กองส่งเสริมสิทธิและสวัสดิการคนพิการ', subUnit: 'ศูนย์พัฒนาศักยภาพและอาชีพคนพิการหยาดฝน จังหวัดเชียงใหม่',
+          divisionName: 'ศูนย์พัฒนาศักยภาพและอาชีพคนพิการหยาดฝน จังหวัดเชียงใหม่ กองส่งเสริมสิทธิและสวัสดิการคนพิการ',
+          empType: 'ทั่วไป', jobGroup: 'บริการ', positionTitle: 'เจ้าพนักงานธุรการ', salaryAmount: 13800,
+          signDateIso: '2025-01-01', newStartDateIso: '2024-10-01', newEndDateIso: '2028-09-30',
+          startDateThai: '๑ ตุลาคม ๒๕๖๗', endDateThai: '๓๐ กันยายน ๒๕๗๑', durationText: '๔ ปี ๐ เดือน ๐ วัน',
+          authorityName: 'นายโชคชัย วิเชียรชัยยะ', authorityPosition: 'อธิบดีกรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ',
+          empSignPosition: 'ตำแหน่ง เจ้าพนักงานธุรการ',
+          witness1Name: 'นางสาวศิริพร วงศ์สวัสดิ์', witness1Position: 'นักทรัพยากรบุคคลชำนาญการพิเศษ',
+          witness2Name: 'นายพงศ์พัฒน์ เกียรติเจริญ', witness2Position: 'ผู้อำนวยการกลุ่มบริหารทรัพยากรบุคคล'
+        }
+      ];
+
+      sampleBatch.forEach(item => {
+        if (!contractRecords.some(r => r.id === item.id)) {
+          contractRecords.push(item);
+        }
+      });
+      persistRecords();
+      renderAdminDashboard();
+    });
+
+    document.getElementById('adminSearchInput').addEventListener('input', renderAdminDashboard);
+    document.getElementById('adminBureauFilter').addEventListener('change', renderAdminDashboard);
+
+    document.getElementById('btnClearAllRecords').addEventListener('click', function() {
+      contractRecords = [];
+      persistRecords();
+      renderAdminDashboard();
+    });
+
+    // การตั้งค่า Google Apps Script URL
+    document.getElementById('btnSaveGasUrl').addEventListener('click', function() {
+      gasWebAppUrl = document.getElementById('gasWebAppUrl').value.trim();
+      try {
+        localStorage.setItem('dep_gas_webapp_url_v1', gasWebAppUrl);
+      } catch (e) {}
+      updateGasBadge();
+      document.getElementById('gasStatusMsg').textContent = gasWebAppUrl
+        ? `บันทึก URL เชื่อมต่อ Google Sheets เรียบร้อยแล้ว: ${gasWebAppUrl}`
+        : 'ยกเลิก URL เชื่อมต่อ Google Sheets แล้ว (ใช้โหมดบันทึกในระบบ)';
+    });
+
+    document.getElementById('btnToggleGasGuide').addEventListener('click', function() {
+      document.getElementById('gasCodeGuideBox').classList.toggle('hidden');
+    });
+
+    document.getElementById('btnCopyGasScript').addEventListener('click', function() {
+      const code = document.getElementById('gasCodeSnippet').textContent;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(code);
+        this.textContent = 'คัดลอกโค้ดสำเร็จแล้ว!';
+        setTimeout(() => { this.textContent = 'คัดลอกโค้ด Code.gs'; }, 2000);
+      }
+    });
+
+    async function syncFromGoogleSheets(silent = false) {
+      const statusMsg = document.getElementById('gasStatusMsg');
+      if (!gasWebAppUrl) {
+        if (!silent) statusMsg.textContent = 'กรุณาวาง Google Apps Script Web App URL ในช่องด้านบนก่อนดึงข้อมูล';
+        return;
+      }
+      if (!silent) statusMsg.textContent = 'กำลังดึงข้อมูลล่าสุดจาก Google Sheets...';
+      try {
+        const res = await fetch(gasWebAppUrl);
+        const json = await res.json();
+        if (json && Array.isArray(json.records) && json.records.length > 0) {
+          contractRecords = json.records;
+          persistRecords();
+          renderAdminDashboard();
+          statusMsg.textContent = `ซิงค์ข้อมูลจาก Google Sheets เรียบร้อยแล้ว จำนวน ${contractRecords.length} รายการ (${new Date().toLocaleTimeString('th-TH')})`;
+        } else if (!silent) {
+          statusMsg.textContent = 'เชื่อมต่อ Google Sheets สำเร็จ (ยังไม่มีแถวข้อมูลในชีต Contracts)';
+        }
+      } catch (err) {
+        if (!silent) {
+          statusMsg.textContent = 'ไม่สามารถเชื่อมต่อ Google Sheets ได้ชั่วคราว (ระบบยังคงบันทึกข้อมูลในเครื่องพร้อมส่งอัตโนมัติ)';
+        }
+      }
+    }
+
+    document.getElementById('btnSyncFromGas').addEventListener('click', function() {
+      syncFromGoogleSheets(false);
+    });
+
+    // ==========================================
+    // 11. การสลับแท็บ (Form / Preview / Admin)
+    // ==========================================
     const formEl = document.getElementById('contractForm');
     const previewEl = document.getElementById('previewSection');
+    const adminEl = document.getElementById('adminSection');
     const tabFormBtn = document.getElementById('tabFormBtn');
     const tabPreviewBtn = document.getElementById('tabPreviewBtn');
+    const tabAdminBtn = document.getElementById('tabAdminBtn');
 
     function switchView(mode) {
+      const activeClass = 'px-4 py-2 rounded-lg text-sm font-semibold bg-brand-navy text-white shadow-sm transition cursor-pointer inline-flex items-center gap-2';
+      const inactiveClass = 'px-4 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-100 transition cursor-pointer inline-flex items-center gap-2';
+
+      formEl.classList.add('hidden');
+      previewEl.classList.add('hidden');
+      adminEl.classList.add('hidden');
+
+      tabFormBtn.className = inactiveClass;
+      tabPreviewBtn.className = inactiveClass;
+      tabAdminBtn.className = inactiveClass;
+
       if (mode === 'preview') {
         populateContractPreview();
-        formEl.classList.add('hidden');
         previewEl.classList.remove('hidden');
-        tabPreviewBtn.className = 'px-4 py-2 rounded-lg text-sm font-semibold bg-brand-navy text-white shadow-sm transition cursor-pointer';
-        tabFormBtn.className = 'px-4 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-100 transition cursor-pointer';
+        tabPreviewBtn.className = activeClass;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (mode === 'admin') {
+        renderAdminDashboard();
+        adminEl.classList.remove('hidden');
+        tabAdminBtn.className = activeClass;
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
-        previewEl.classList.add('hidden');
         formEl.classList.remove('hidden');
-        tabFormBtn.className = 'px-4 py-2 rounded-lg text-sm font-semibold bg-brand-navy text-white shadow-sm transition cursor-pointer';
-        tabPreviewBtn.className = 'px-4 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-100 transition cursor-pointer';
+        tabFormBtn.className = activeClass;
       }
     }
 
     document.getElementById('btnGenerateContract').addEventListener('click', function() {
       if (validateForm()) {
+        const rec = collectCurrentFormRecord();
+        saveAndSendContractRecord(rec);
         document.getElementById('statusDot').className = 'w-2.5 h-2.5 rounded-full bg-brand-green';
-        document.getElementById('statusText').textContent = 'สถานะ: สร้างเอกสารสัญญาจ้างขนาด A4 เรียบร้อยแล้ว พร้อมสั่งพิมพ์';
+        document.getElementById('statusText').textContent = 'สถานะ: บันทึกข้อมูลเข้า Admin Dashboard และสร้างสัญญาจ้าง A4 เรียบร้อยแล้ว';
         switchView('preview');
       }
     });
@@ -1642,15 +2707,17 @@
         switchView('preview');
       }
     });
+    tabAdminBtn.addEventListener('click', () => switchView('admin'));
 
     document.getElementById('btnBackToEdit').addEventListener('click', () => switchView('form'));
+    document.getElementById('btnGoToAdminFromPreview').addEventListener('click', () => switchView('admin'));
 
     document.getElementById('btnPrintDoc').addEventListener('click', function() {
       window.print();
     });
 
-    // Initialize default previews
     updateContractNoPreview();
+    loadSavedState();
   </script>
 </body>
 </html>
