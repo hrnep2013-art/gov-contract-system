@@ -1246,6 +1246,9 @@ function doGet(e) {
               <option value="กองยุทธศาสตร์และแผนงาน">6. กองยุทธศาสตร์และแผนงาน</option>
               <option value="กองส่งเสริมสิทธิและสวัสดิการคนพิการ">7. กองส่งเสริมสิทธิและสวัสดิการคนพิการ</option>
             </select>
+            <button type="button" id="btnAdminLogout" class="px-3.5 py-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs sm:text-sm font-semibold transition cursor-pointer">
+              ออกจากระบบ
+            </button>
             <button type="button" id="btnClearAllRecords" class="px-3 py-2 rounded-lg border border-red-200 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-semibold transition cursor-pointer">
               ล้างรายการทั้งหมด
             </button>
@@ -2681,6 +2684,12 @@ function doGet(e) {
         tabPreviewBtn.className = activeClass;
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (mode === 'admin') {
+        if (!isAdminLoggedIn) {
+          adminLoginModal.classList.remove('hidden');
+          document.getElementById('loginPassword').value = 'admin1234';
+          loginErrorMsg.classList.add('hidden');
+          return; // Block switching view to admin dashboard
+        }
         renderAdminDashboard();
         adminEl.classList.remove('hidden');
         tabAdminBtn.className = activeClass;
@@ -2714,6 +2723,114 @@ function doGet(e) {
 
     document.getElementById('btnPrintDoc').addEventListener('click', function() {
       window.print();
+    });
+
+  </script>
+
+  <!-- ==========================================
+       ADMIN LOGIN MODAL (Hidden on print)
+       ========================================== -->
+  <div id="adminLoginModal" class="no-print hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-md w-full mx-4 overflow-hidden">
+      <div class="bg-brand-navy p-5 text-white flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center shrink-0 text-brand-amber font-bold text-lg">
+          พก.
+        </div>
+        <div>
+          <h3 class="text-lg font-bold">เข้าสู่ระบบผู้ดูแล (Admin Login)</h3>
+          <p class="text-xs text-blue-200">ระบบติดตามและสรุปข้อมูลผู้ทำสัญญาจ้าง</p>
+        </div>
+      </div>
+      <form id="adminLoginForm" class="p-6 space-y-4">
+        <div id="loginErrorMsg" class="hidden text-xs font-semibold text-red-600 bg-red-50 p-2.5 rounded-lg border border-red-200">
+          ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง
+        </div>
+        <div>
+          <label for="loginUsername" class="form-label text-xs">ชื่อผู้ใช้งาน <span class="required-dot">*</span></label>
+          <input type="text" id="loginUsername" class="form-input" value="admin" placeholder="กรอกชื่อผู้ใช้งาน" required autocomplete="username">
+        </div>
+        <div>
+          <label for="loginPassword" class="form-label text-xs">รหัสผ่าน <span class="required-dot">*</span></label>
+          <div class="relative">
+            <input type="password" id="loginPassword" class="form-input pr-10" value="admin1234" placeholder="กรอกรหัสผ่าน" required autocomplete="current-password">
+            <button type="button" id="btnToggleLoginPassword" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer">
+              <svg class="w-5 h-5" id="toggleLoginPasswordIcon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+              </svg>
+            </button>
+          </div>
+          <p class="text-[11px] text-slate-500 mt-1">บัญชีทดสอบเริ่มต้น: admin / รหัสผ่าน: admin1234</p>
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <button type="button" id="btnCancelLogin" class="px-4 py-2 rounded-lg border border-slate-300 text-slate-700 text-sm font-semibold hover:bg-slate-100 cursor-pointer">
+            ยกเลิก
+          </button>
+          <button type="submit" class="px-5 py-2 rounded-lg bg-brand-navy hover:bg-blue-900 text-white text-sm font-bold cursor-pointer">
+            เข้าสู่ระบบ
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // State สำหรับการเข้าสู่ระบบ
+    let isAdminLoggedIn = false;
+
+    // ตรวจสอบสถานะการเข้าสู่ระบบเริ่มต้นจาก sessionStorage
+    try {
+      if (sessionStorage.getItem('dep_admin_auth_v1') === 'true') {
+        isAdminLoggedIn = true;
+      }
+    } catch (e) {}
+
+    // จัดการปุ่มแสดง/ซ่อนรหัสผ่านล็อกอิน
+    const loginPasswordInput = document.getElementById('loginPassword');
+    const btnToggleLoginPassword = document.getElementById('btnToggleLoginPassword');
+    btnToggleLoginPassword.addEventListener('click', function() {
+      if (loginPasswordInput.type === 'password') {
+        loginPasswordInput.type = 'text';
+      } else {
+        loginPasswordInput.type = 'password';
+      }
+    });
+
+    // จัดการฟอร์มล็อกอิน Admin
+    const adminLoginForm = document.getElementById('adminLoginForm');
+    const adminLoginModal = document.getElementById('adminLoginModal');
+    const loginErrorMsg = document.getElementById('loginErrorMsg');
+
+    adminLoginForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const user = document.getElementById('loginUsername').value.trim();
+      const pass = loginPasswordInput.value.trim();
+
+      if (user === 'admin' && pass === 'admin1234') {
+        isAdminLoggedIn = true;
+        loginErrorMsg.classList.add('hidden');
+        adminLoginModal.classList.add('hidden');
+        try {
+          sessionStorage.setItem('dep_admin_auth_v1', 'true');
+        } catch (err) {}
+        switchView('admin');
+      } else {
+        loginErrorMsg.classList.remove('hidden');
+      }
+    });
+
+    document.getElementById('btnCancelLogin').addEventListener('click', function() {
+      adminLoginModal.classList.add('hidden');
+      switchView('form');
+    });
+
+    // ปุ่มออกจากระบบ
+    document.getElementById('btnAdminLogout').addEventListener('click', function() {
+      isAdminLoggedIn = false;
+      try {
+        sessionStorage.removeItem('dep_admin_auth_v1');
+      } catch (err) {}
+      switchView('form');
     });
 
     updateContractNoPreview();
