@@ -92,32 +92,65 @@
       margin-left: 2px;
     }
 
-    /* A4 Document Preview Styling */
+    /* ==========================================================
+       A4 Document Preview Styling
+       - ฟอนต์ TH SarabunPSK
+       - กั้นหน้า (ซ้าย) 2.0 ซม. / กั้นหลัง (ขวา) 1.5 ซม.
+       - ตัดคำภาษาไทยและจัดย่อหน้าให้สวยงามอ่านง่าย
+       ========================================================== */
     .a4-page {
       width: 210mm;
       min-height: 297mm;
-      padding: 20mm 20mm 20mm 25mm;
+      /* บน 1.8 ซม. | ขวา (กั้นหลัง) 1.5 ซม. | ล่าง 1.8 ซม. | ซ้าย (กั้นหน้า) 2.0 ซม. */
+      padding: 18mm 15mm 18mm 20mm;
       margin: 0 auto 2rem auto;
       background: #FFFFFF;
       box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15), 0 8px 10px -6px rgba(15, 23, 42, 0.1);
       color: #000000;
       font-family: "TH SarabunPSK", "TH SarabunIT๙", "TH Sarabun New", "Sarabun", sans-serif;
+      font-size: 16pt;
+      line-height: 1.38;
+      position: relative;
+      word-break: normal;
+      overflow-wrap: break-word;
+      hyphens: none;
+    }
+
+    /* Fallback scale when rendered with Google Font Sarabun (which has larger glyph metrics than TH SarabunPSK) */
+    @supports not (font-family: "TH SarabunPSK") {
+      .a4-page {
+        font-size: 13.5pt;
+        line-height: 1.48;
+      }
+    }
+
+    .a4-page-standardized {
+      font-family: "TH SarabunPSK", "TH SarabunIT๙", "TH Sarabun New", "Sarabun", sans-serif;
       font-size: 14pt;
       line-height: 1.45;
-      position: relative;
     }
 
     .a4-page p {
       margin-top: 0;
-      margin-bottom: 0.4rem;
-      text-align: justify;
+      margin-bottom: 0.35rem;
+      text-align: left;
+      word-spacing: normal;
     }
 
     .doc-indent {
-      text-indent: 2.5cm;
+      text-indent: 2.0cm;
     }
 
     .doc-fill {
+      border-bottom: 1px dotted #334155;
+      padding: 0 4px;
+      font-weight: 600;
+      color: #000080;
+      display: inline;
+      white-space: nowrap;
+    }
+
+    .doc-fill-wrap {
       border-bottom: 1px dotted #334155;
       padding: 0 4px;
       font-weight: 600;
@@ -144,11 +177,11 @@
       padding: 1rem 0.5rem;
     }
 
-    /* Print Media Rules */
+    /* Print Media Rules: กั้นหน้า 2.0 ซม. (20mm) กั้นหลัง 1.5 ซม. (15mm) */
     @media print {
       @page {
         size: A4 portrait;
-        margin: 18mm 18mm 18mm 24mm;
+        margin: 18mm 15mm 18mm 20mm;
       }
 
       html, body {
@@ -188,7 +221,7 @@
         page-break-after: auto;
       }
 
-      .doc-fill {
+      .doc-fill, .doc-fill-wrap {
         color: #000000 !important;
         border-bottom: 1px dotted #475569 !important;
       }
@@ -207,10 +240,10 @@
         <div>
           <div class="flex flex-wrap items-center gap-2">
             <span class="text-xs font-semibold uppercase tracking-wider px-2 py-0.5 rounded bg-brand-amber text-slate-900">
-              ระเบียบสำนักนายกรัฐมนตรีฯ
+              ระเบียบสำนักนายกรัฐมนตรีฯ พ.ศ. ๒๕๔๗
             </span>
             <span class="text-xs text-blue-200">
-              ต้นแบบ: สัญญาจ้าง รอบที่ 6 (พ.ศ. 2568 - 2571)
+              ฟอนต์ TH SarabunPSK • เลขไทยทั้งหมด • กั้นหน้า ๒ ซม. หลัง ๑.๕ ซม.
             </span>
           </div>
           <h1 class="text-xl sm:text-2xl font-bold tracking-tight mt-0.5">
@@ -280,8 +313,8 @@
           <div class="flex items-center gap-2.5">
             <span class="w-7 h-7 rounded-full bg-brand-amber text-slate-950 font-bold text-sm flex items-center justify-center">1</span>
             <div>
-              <h2 class="text-base sm:text-lg font-bold">ส่วนที่ 1: ข้อมูลส่วนตัวและตำแหน่ง</h2>
-              <p class="text-xs text-slate-200">ข้อมูลผู้ยื่นคำร้องต่อสัญญาจ้างพนักงานราชการ</p>
+              <h2 class="text-base sm:text-lg font-bold">ส่วนที่ 1: ข้อมูลส่วนตัวของพนักงานราชการ</h2>
+              <p class="text-xs text-slate-200">ข้อมูลผู้ทำสัญญาจ้างพนักงานราชการ</p>
             </div>
           </div>
           <span class="text-xs bg-white/15 px-2.5 py-1 rounded-full">ข้อมูลคู่สัญญา</span>
@@ -292,12 +325,12 @@
             <!-- คำนำหน้า -->
             <div class="sm:col-span-3">
               <label for="prefix" class="form-label">คำนำหน้า <span class="required-dot">*</span></label>
-              <select id="prefix" class="form-select" required>
-                <option value="">-- เลือก --</option>
-                <option value="นาย">นาย</option>
-                <option value="นาง">นาง</option>
-                <option value="นางสาว">นางสาว</option>
-              </select>
+              <input type="text" id="prefix" list="prefixOptions" class="form-input" placeholder="นาย / นาง / นางสาว" required>
+              <datalist id="prefixOptions">
+                <option value="นาย"></option>
+                <option value="นาง"></option>
+                <option value="นางสาว"></option>
+              </datalist>
             </div>
 
             <!-- ชื่อ-นามสกุล -->
@@ -310,14 +343,14 @@
             <div class="sm:col-span-4">
               <label for="nationalId" class="form-label">เลขบัตรประชาชน 13 หลัก <span class="required-dot">*</span></label>
               <input type="text" id="nationalId" maxlength="17" inputmode="numeric" class="form-input font-mono" placeholder="X-XXXX-XXXXX-XX-X" required>
-              <p id="nationalIdHint" class="text-xs text-slate-500 mt-1">กรอกตัวเลข 13 หลัก ระบบจัดรูปแบบให้อัตโนมัติ</p>
+              <p id="nationalIdHint" class="text-xs text-slate-500 mt-1">แปลงเป็นเลขไทยในเอกสารอัตโนมัติ</p>
             </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-12 gap-4">
             <!-- วันเดือนปีเกิด -->
             <div class="sm:col-span-4">
-              <label for="birthDate" class="form-label">วันเดือนปีเกิด (ค.ศ.) <span class="required-dot">*</span></label>
+              <label for="birthDate" class="form-label">วันเดือนปีเกิด <span class="required-dot">*</span></label>
               <input type="date" id="birthDate" class="form-input" required>
               <p class="text-xs text-brand-blue font-medium mt-1" id="birthDateThaiPreview">รูปแบบราชการ: -</p>
             </div>
@@ -325,24 +358,24 @@
             <!-- อายุ (คำนวณอัตโนมัติหรือปรับแก้ได้) -->
             <div class="sm:col-span-2">
               <label for="ageYears" class="form-label">อายุ (ปี) <span class="required-dot">*</span></label>
-              <input type="number" id="ageYears" min="18" max="80" class="form-input" placeholder="เช่น 32" required>
+              <input type="number" id="ageYears" min="18" max="80" class="form-input" placeholder="เช่น 31" required>
               <p class="text-xs text-slate-500 mt-1">คำนวณจากวันเกิด</p>
             </div>
 
             <!-- เบอร์โทรศัพท์ -->
             <div class="sm:col-span-3">
               <label for="phone" class="form-label">เบอร์โทรศัพท์ <span class="required-dot">*</span></label>
-              <input type="tel" id="phone" class="form-input" placeholder="เช่น 081-234-5678" required>
+              <input type="tel" id="phone" class="form-input" placeholder="เช่น 089-456-7890" required>
             </div>
 
             <!-- อีเมล -->
             <div class="sm:col-span-3">
               <label for="email" class="form-label">อีเมล <span class="required-dot">*</span></label>
-              <input type="email" id="email" class="form-input" placeholder="name@agency.go.th" required>
+              <input type="email" id="email" class="form-input" placeholder="name@dep.go.th" required>
             </div>
           </div>
 
-          <!-- ที่อยู่ปัจจุบัน (แยกช่องตามสัญญาจ้างต้นแบบเพื่อให้ลงช่องสัญญาได้ตรงทุกจุด) -->
+          <!-- ที่อยู่ปัจจุบัน -->
           <div class="pt-2 border-t border-slate-100">
             <div class="flex items-center justify-between mb-3">
               <label class="text-sm font-bold text-slate-700">ที่อยู่ปัจจุบัน (สำหรับระบุในสัญญาจ้างพนักงานราชการ) <span class="required-dot">*</span></label>
@@ -351,7 +384,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-12 gap-3.5">
               <div class="sm:col-span-3">
                 <label for="addrNo" class="form-label text-xs">อยู่บ้านเลขที่ <span class="required-dot">*</span></label>
-                <input type="text" id="addrNo" class="form-input" placeholder="เช่น 123/45 หมู่ 6" required>
+                <input type="text" id="addrNo" class="form-input" placeholder="เช่น 255/18" required>
               </div>
               <div class="sm:col-span-3">
                 <label for="addrRoad" class="form-label text-xs">ถนน</label>
@@ -382,17 +415,17 @@
         </div>
       </section>
 
-      <!-- ส่วนที่ 2: ข้อมูลการจ้างงาน -->
+      <!-- ส่วนที่ 2: ข้อมูลการจ้างงาน (นำช่องเลขที่ตำแหน่งออก และให้เพิ่มตำแหน่งเองได้อิสระ) -->
       <section class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div class="bg-brand-slate text-white px-5 py-3.5 flex items-center justify-between">
           <div class="flex items-center gap-2.5">
             <span class="w-7 h-7 rounded-full bg-brand-amber text-slate-950 font-bold text-sm flex items-center justify-center">2</span>
             <div>
-              <h2 class="text-base sm:text-lg font-bold">ส่วนที่ 2: ข้อมูลการจ้างงาน</h2>
-              <p class="text-xs text-slate-200">สังกัดส่วนราชการ ประเภทพนักงานราชการ กลุ่มงาน และอัตราค่าตอบแทน</p>
+              <h2 class="text-base sm:text-lg font-bold">ส่วนที่ 2: ข้อมูลการจ้างงานและอัตราค่าตอบแทน</h2>
+              <p class="text-xs text-slate-200">สังกัดส่วนราชการ ประเภทพนักงานราชการ กลุ่มงาน ตำแหน่ง และค่าตอบแทน</p>
             </div>
           </div>
-          <span class="text-xs bg-white/15 px-2.5 py-1 rounded-full">ข้อ 1 และ ข้อ 4 ของสัญญา</span>
+          <span class="text-xs bg-white/15 px-2.5 py-1 rounded-full">ข้อ ๑ และ ข้อ ๔ ของสัญญา</span>
         </div>
 
         <div class="p-5 sm:p-6 space-y-5">
@@ -420,42 +453,45 @@
               </select>
             </div>
 
-            <!-- กลุ่มงาน -->
+            <!-- กลุ่มงาน / ลักษณะงาน -->
             <div class="sm:col-span-4">
-              <label for="jobGroup" class="form-label">กลุ่มงาน <span class="required-dot">*</span></label>
-              <select id="jobGroup" class="form-select" required>
-                <option value="">-- เลือกกลุ่มงาน --</option>
-                <option value="บริการ">บริการ</option>
-                <option value="เทคนิค">เทคนิค</option>
-                <option value="บริหารทั่วไป">บริหารทั่วไป</option>
-                <option value="วิชาชีพเฉพาะ">วิชาชีพเฉพาะ</option>
-                <option value="เชี่ยวชาญเฉพาะ">เชี่ยวชาญเฉพาะ</option>
-              </select>
+              <label for="jobGroup" class="form-label">กลุ่มงาน / ลักษณะงาน <span class="required-dot">*</span></label>
+              <input type="text" id="jobGroup" list="jobGroupOptions" class="form-input" placeholder="เลือกหรือพิมพ์ระบุกลุ่มงานเองได้" required>
+              <datalist id="jobGroupOptions">
+                <option value="บริการ"></option>
+                <option value="เทคนิค"></option>
+                <option value="บริหารทั่วไป"></option>
+                <option value="วิชาชีพเฉพาะ"></option>
+                <option value="เชี่ยวชาญเฉพาะ"></option>
+              </datalist>
             </div>
 
-            <!-- ตำแหน่ง -->
+            <!-- ตำแหน่งพนักงานราชการ (สามารถพิมพ์เพิ่มเองได้) -->
             <div class="sm:col-span-4">
-              <label for="positionTitle" class="form-label">ตำแหน่ง <span class="required-dot">*</span></label>
-              <input type="text" id="positionTitle" class="form-input" placeholder="เช่น นักทรัพยากรบุคคล / นักวิชาการคอมพิวเตอร์" required>
+              <label for="positionTitle" class="form-label">ตำแหน่งพนักงานราชการ (พิมพ์เพิ่มเองได้) <span class="required-dot">*</span></label>
+              <input type="text" id="positionTitle" list="positionOptions" class="form-input" placeholder="ระบุตำแหน่ง เช่น นักทรัพยากรบุคคล" required>
+              <datalist id="positionOptions">
+                <option value="นักทรัพยากรบุคคล"></option>
+                <option value="นักวิชาการคอมพิวเตอร์"></option>
+                <option value="นักพัฒนาสังคม"></option>
+                <option value="นักจัดการงานทั่วไป"></option>
+                <option value="นักวิชาการเงินและบัญชี"></option>
+                <option value="เจ้าพนักงานธุรการ"></option>
+                <option value="เจ้าหน้าที่บันทึกข้อมูล"></option>
+              </datalist>
             </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-start">
-            <!-- เลขที่ตำแหน่ง -->
-            <div class="sm:col-span-4">
-              <label for="positionNumber" class="form-label">เลขที่ตำแหน่ง <span class="required-dot">*</span></label>
-              <input type="text" id="positionNumber" class="form-input" placeholder="เช่น 1045" required>
-            </div>
-
             <!-- อัตราค่าตอบแทน (บาท) -->
-            <div class="sm:col-span-4">
+            <div class="sm:col-span-5">
               <label for="salaryAmount" class="form-label">อัตราค่าตอบแทน (บาท/เดือน) <span class="required-dot">*</span></label>
               <input type="number" id="salaryAmount" min="0" step="10" class="form-input font-semibold text-brand-navy" placeholder="เช่น 18000" required>
             </div>
 
             <!-- แสดงตัวอักษรภาษาไทยอัตโนมัติ -->
-            <div class="sm:col-span-4">
-              <label class="form-label">คำอ่านอัตราค่าตอบแทน (ตัวอักษรไทยอัตโนมัติ)</label>
+            <div class="sm:col-span-7">
+              <label class="form-label">คำอ่านอัตราค่าตอบแทน (ตัวอักษรไทยและเลขไทยอัตโนมัติ)</label>
               <div id="salaryThaiTextDisplay" class="px-3.5 py-2.5 rounded-lg bg-blue-50/80 border border-blue-200 text-brand-navy font-bold text-sm min-h-[42px] flex items-center">
                 (รอระบุตัวเลขค่าตอบแทน)
               </div>
@@ -464,109 +500,160 @@
         </div>
       </section>
 
-      <!-- ส่วนที่ 3: ข้อมูลสัญญาจ้าง -->
+      <!-- ส่วนที่ 3: ข้อมูลสัญญาจ้าง (เลขที่สัญญารันตามปีปฏิทิน, คำนวณปี/เดือนอัตโนมัติจากวันเริ่ม-สิ้นสุด, ตำแหน่งผู้ลงนามเพิ่มเองได้ทั้งหมด) -->
       <section class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div class="bg-brand-slate text-white px-5 py-3.5 flex items-center justify-between">
           <div class="flex items-center gap-2.5">
             <span class="w-7 h-7 rounded-full bg-brand-amber text-slate-950 font-bold text-sm flex items-center justify-center">3</span>
             <div>
-              <h2 class="text-base sm:text-lg font-bold">ส่วนที่ 3: ข้อมูลสัญญาจ้าง และผู้มีอำนาจลงนาม</h2>
-              <p class="text-xs text-slate-200">ข้อมูลสัญญาจ้างเดิม ระยะเวลาต่อสัญญาใหม่ และรายชื่อผู้ลงนาม/พยาน</p>
+              <h2 class="text-base sm:text-lg font-bold">ส่วนที่ 3: ข้อมูลสัญญาจ้าง และผู้มีอำนาจลงนาม / พยาน</h2>
+              <p class="text-xs text-slate-200">เลขที่สัญญารันตามปีปฏิทิน คำนวณระยะเวลาจากวันเริ่ม-วันสิ้นสุด และกำหนดตำแหน่งผู้ลงนามได้เองทั้งหมด</p>
             </div>
           </div>
-          <span class="text-xs bg-white/15 px-2.5 py-1 rounded-full">ข้อ 3 และช่องลงนาม</span>
+          <span class="text-xs bg-white/15 px-2.5 py-1 rounded-full">ข้อ ๓ และช่องลงนาม</span>
         </div>
 
         <div class="p-5 sm:p-6 space-y-5">
-          <!-- ข้อมูลสัญญาจ้างเดิม & เลขที่สัญญาใหม่ -->
-          <div class="grid grid-cols-1 sm:grid-cols-12 gap-4">
+          <!-- เลขที่สัญญาจ้างรันตามปีปฏิทิน & วันที่ทำสัญญา -->
+          <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-start">
             <div class="sm:col-span-3">
-              <label for="oldContractNo" class="form-label">สัญญาจ้างเดิมเลขที่ <span class="required-dot">*</span></label>
-              <input type="text" id="oldContractNo" class="form-input" placeholder="เช่น 125/2563" required>
+              <label for="contractSeqNo" class="form-label">ลำดับเลขที่สัญญา <span class="required-dot">*</span></label>
+              <div class="flex gap-1.5">
+                <input type="text" id="contractSeqNo" class="form-input font-semibold" placeholder="เช่น 001" value="001" required>
+                <button type="button" id="btnNextSeq" title="รันเลขลำดับถัดไป" class="px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-300 shrink-0 cursor-pointer">
+                  +1
+                </button>
+              </div>
+              <p class="text-xs text-slate-500 mt-1">ระบุเลขลำดับ หรือกด +1 เพื่อรันเลข</p>
             </div>
 
             <div class="sm:col-span-3">
-              <label for="oldStartDate" class="form-label">วันที่เริ่มสัญญาเดิม <span class="required-dot">*</span></label>
-              <input type="date" id="oldStartDate" class="form-input" required>
-              <p class="text-xs text-slate-500 mt-1" id="oldStartThaiPreview">รูปแบบราชการ: -</p>
+              <label for="contractCalendarYear" class="form-label">ปีปฏิทิน พ.ศ. ของเลขที่สัญญา <span class="required-dot">*</span></label>
+              <input type="number" id="contractCalendarYear" class="form-input font-semibold text-brand-navy" placeholder="เช่น 2568" required>
+              <p class="text-xs text-slate-500 mt-1">รันตามปีปฏิทิน (พ.ศ.) อัตโนมัติ</p>
             </div>
 
             <div class="sm:col-span-3">
-              <label for="oldEndDate" class="form-label">วันที่สิ้นสุดสัญญาเดิม <span class="required-dot">*</span></label>
-              <input type="date" id="oldEndDate" class="form-input" required>
-              <p class="text-xs text-slate-500 mt-1" id="oldEndThaiPreview">รูปแบบราชการ: -</p>
+              <label class="form-label">สัญญาเลขที่ (แสดงในเอกสาร)</label>
+              <div id="contractNoPreviewBox" class="px-3.5 py-2.5 rounded-lg bg-amber-50 border border-amber-300 text-slate-900 font-bold text-sm min-h-[42px] flex items-center">
+                ๐๐๑/๒๕๖๘
+              </div>
+              <p class="text-xs text-slate-500 mt-1">แสดงผลเป็นเลขไทยที่มุมขวาบน</p>
             </div>
 
-            <div class="sm:col-span-3">
-              <label for="newContractNo" class="form-label">สัญญาจ้างใหม่เลขที่ <span class="required-dot">*</span></label>
-              <input type="text" id="newContractNo" class="form-input" placeholder="เช่น 089/2567" required>
-              <p class="text-xs text-slate-500 mt-1">แสดงที่มุมขวาบนของสัญญา</p>
-            </div>
-          </div>
-
-          <!-- ข้อมูลระยะเวลาที่ขอต่อสัญญา และวันที่เริ่มต้น-สิ้นสุดสัญญาใหม่ -->
-          <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 pt-2 border-t border-slate-100">
             <div class="sm:col-span-3">
               <label for="contractSignDate" class="form-label">วันที่ทำสัญญาฉบับนี้ <span class="required-dot">*</span></label>
               <input type="date" id="contractSignDate" class="form-input" required>
               <p class="text-xs text-brand-blue font-medium mt-1" id="signDateThaiPreview">รูปแบบราชการ: -</p>
             </div>
-
-            <div class="sm:col-span-3">
-              <label for="renewalDurationYears" class="form-label">ระยะเวลาที่ขอต่อสัญญา <span class="required-dot">*</span></label>
-              <select id="renewalDurationYears" class="form-select" required>
-                <option value="1">1 ปี</option>
-                <option value="2">2 ปี</option>
-                <option value="3">3 ปี</option>
-                <option value="4" selected>4 ปี (ตามรอบกรอบอัตรากำลัง)</option>
-              </select>
-            </div>
-
-            <div class="sm:col-span-3">
-              <label for="newStartDate" class="form-label">วันที่เริ่มต้นสัญญาใหม่ <span class="required-dot">*</span></label>
-              <input type="date" id="newStartDate" class="form-input" required>
-              <p class="text-xs text-brand-blue font-medium mt-1" id="newStartThaiPreview">รูปแบบราชการ: -</p>
-            </div>
-
-            <div class="sm:col-span-3">
-              <label for="newEndDate" class="form-label">วันที่สิ้นสุดสัญญาใหม่ <span class="required-dot">*</span></label>
-              <input type="date" id="newEndDate" class="form-input" required>
-              <p class="text-xs text-brand-blue font-medium mt-1" id="newEndThaiPreview">รูปแบบราชการ: -</p>
-            </div>
           </div>
 
-          <!-- ผู้มีอำนาจลงนาม และพยาน 2 คน -->
-          <div class="pt-3 border-t border-slate-100">
-            <h3 class="text-sm font-bold text-slate-700 mb-3">ผู้มีอำนาจลงนาม (หัวหน้าส่วนราชการ) และพยาน 2 คน</h3>
+          <!-- ข้อ 3: วันที่เริ่มต้น - วันที่สิ้นสุด และระบบคำนวณจำนวนปี/เดือนอัตโนมัติ -->
+          <div class="pt-4 border-t border-slate-100">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
+              <div>
+                <h3 class="text-sm font-bold text-slate-800">กำหนดระยะเวลาการจ้าง (ข้อ ๓) — คำนวณจากวันเริ่มและวันสิ้นสุดอัตโนมัติ</h3>
+                <p class="text-xs text-slate-500">เลือกวันที่เริ่มต้นและวันที่สิ้นสุดสัญญา ระบบจะคำนวณจำนวนปีและเดือนใส่ในข้อ ๓ ของสัญญาให้อัตโนมัติ</p>
+              </div>
+              <div class="flex flex-wrap items-center gap-1.5">
+                <span class="text-xs text-slate-500 mr-1">ตั้งค่าระยะเวลาด่วน:</span>
+                <button type="button" data-preset-years="1" class="preset-duration-btn px-2.5 py-1 rounded border border-slate-300 bg-slate-50 hover:bg-slate-100 text-xs font-semibold text-slate-700 cursor-pointer">1 ปี</button>
+                <button type="button" data-preset-years="2" class="preset-duration-btn px-2.5 py-1 rounded border border-slate-300 bg-slate-50 hover:bg-slate-100 text-xs font-semibold text-slate-700 cursor-pointer">2 ปี</button>
+                <button type="button" data-preset-years="4" class="preset-duration-btn px-2.5 py-1 rounded border border-brand-navy/30 bg-blue-50 hover:bg-blue-100 text-xs font-semibold text-brand-navy cursor-pointer">4 ปี</button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-start">
+              <div class="sm:col-span-4">
+                <label for="newStartDate" class="form-label">เริ่มตั้งแต่วันที่ <span class="required-dot">*</span></label>
+                <input type="date" id="newStartDate" class="form-input" required>
+                <p class="text-xs text-brand-blue font-medium mt-1" id="newStartThaiPreview">รูปแบบราชการ: -</p>
+              </div>
+
+              <div class="sm:col-span-4">
+                <label for="newEndDate" class="form-label">และสิ้นสุดในวันที่ <span class="required-dot">*</span></label>
+                <input type="date" id="newEndDate" class="form-input" required>
+                <p class="text-xs text-brand-blue font-medium mt-1" id="newEndThaiPreview">รูปแบบราชการ: -</p>
+              </div>
+
+              <div class="sm:col-span-4">
+                <label class="form-label">ระยะเวลาที่ระบบคำนวณได้ (ข้อ ๓)</label>
+                <div id="calculatedDurationBox" class="px-3.5 py-2.5 rounded-lg bg-emerald-50 border border-emerald-300 text-emerald-950 font-bold text-sm min-h-[42px] flex items-center">
+                  รอเลือกวันเริ่มและวันสิ้นสุด
+                </div>
+                <p class="text-xs text-slate-500 mt-1">คำนวณจากวันเริ่มถึงวันสิ้นสุดสัญญาโดยอัตโนมัติ</p>
+              </div>
+            </div>
+
+            <!-- ข้อมูลอ้างอิงสัญญาเดิมสำหรับบันทึกในระบบ (ไม่นำไปแสดงในหน้าเอกสารสัญญาจ้างตามที่กำหนด) -->
+            <details class="mt-3 bg-slate-50 rounded-lg border border-slate-200 px-4 py-2.5">
+              <summary class="text-xs font-semibold text-slate-600 cursor-pointer select-none">
+                ข้อมูลสัญญาจ้างเดิม (สำหรับบันทึกประวัติคำร้องเท่านั้น — ไม่แสดงในเอกสารสัญญาจ้าง)
+              </summary>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3 pt-2 border-t border-slate-200">
+                <div>
+                  <label for="oldContractNo" class="form-label text-xs">สัญญาจ้างเดิมเลขที่ (ถ้ามี)</label>
+                  <input type="text" id="oldContractNo" class="form-input text-sm" placeholder="เช่น 142/2563">
+                </div>
+                <div>
+                  <label for="oldStartDate" class="form-label text-xs">วันที่เริ่มสัญญาเดิม</label>
+                  <input type="date" id="oldStartDate" class="form-input text-sm">
+                </div>
+                <div>
+                  <label for="oldEndDate" class="form-label text-xs">วันที่สิ้นสุดสัญญาเดิม</label>
+                  <input type="date" id="oldEndDate" class="form-input text-sm">
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <!-- ผู้มีอำนาจลงนาม พนักงานราชการ และพยาน 2 คน (สามารถเพิ่มและแก้ไขตำแหน่งเองได้ทั้งหมด) -->
+          <div class="pt-4 border-t border-slate-100">
+            <div class="mb-3">
+              <h3 class="text-sm font-bold text-slate-800">ข้อมูลผู้ลงนามในสัญญาจ้าง (สามารถเพิ่มหรือแก้ไขตำแหน่งเองได้ทั้งหมด)</h3>
+              <p class="text-xs text-slate-500">ระบุชื่อและตำแหน่งของผู้ว่าจ้าง พนักงานราชการ และพยานทั้ง ๒ คน เพื่อแสดงในช่องลงลายมือชื่อ</p>
+            </div>
+
             <div class="grid grid-cols-1 sm:grid-cols-12 gap-4">
-              <!-- ผู้มีอำนาจลงนาม -->
+              <!-- 1. ผู้ว่าจ้าง / ผู้มีอำนาจลงนาม -->
               <div class="sm:col-span-6">
-                <label for="authorityName" class="form-label">ชื่อผู้มีอำนาจลงนาม (หัวหน้าส่วนราชการ) <span class="required-dot">*</span></label>
+                <label for="authorityName" class="form-label">ชื่อผู้ว่าจ้าง (ผู้มีอำนาจลงนาม) <span class="required-dot">*</span></label>
                 <input type="text" id="authorityName" class="form-input" placeholder="เช่น นายโชคชัย วิเชียรชัยยะ" required>
               </div>
               <div class="sm:col-span-6">
-                <label for="authorityPosition" class="form-label">ตำแหน่งผู้มีอำนาจลงนาม <span class="required-dot">*</span></label>
-                <input type="text" id="authorityPosition" class="form-input" placeholder="เช่น อธิบดีกรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ" required>
+                <label for="authorityPosition" class="form-label">ตำแหน่งผู้ว่าจ้าง (พิมพ์เพิ่มเองได้) <span class="required-dot">*</span></label>
+                <input type="text" id="authorityPosition" list="authorityPosOptions" class="form-input" placeholder="เช่น อธิบดีกรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ" required>
+                <datalist id="authorityPosOptions">
+                  <option value="อธิบดีกรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ"></option>
+                  <option value="รองอธิบดี ปฏิบัติราชการแทน อธิบดีกรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ"></option>
+                  <option value="ผู้อำนวยการสำนักงาน ปฏิบัติราชการแทน อธิบดีกรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ"></option>
+                </datalist>
               </div>
 
-              <!-- พยานคนที่ 1 -->
+              <!-- 2. ตำแหน่งพนักงานราชการใต้ช่องลงนาม -->
+              <div class="sm:col-span-12">
+                <label for="empSignPosition" class="form-label">ตำแหน่งพนักงานราชการ (แสดงใต้ช่องลงชื่อพนักงานราชการ — พิมพ์เพิ่มหรือแก้ไขเองได้) <span class="required-dot">*</span></label>
+                <input type="text" id="empSignPosition" class="form-input" placeholder="เช่น พนักงานราชการ ตำแหน่งนักทรัพยากรบุคคล" required>
+              </div>
+
+              <!-- 3. พยานคนที่ 1 -->
               <div class="sm:col-span-6">
                 <label for="witness1Name" class="form-label">ชื่อพยานคนที่ 1 <span class="required-dot">*</span></label>
                 <input type="text" id="witness1Name" class="form-input" placeholder="ระบุชื่อ-นามสกุล พยานคนที่ 1" required>
               </div>
               <div class="sm:col-span-6">
+                <label for="witness1Position" class="form-label">ตำแหน่งพยานคนที่ 1 (พิมพ์เพิ่มเองได้) <span class="required-dot">*</span></label>
+                <input type="text" id="witness1Position" class="form-input" placeholder="เช่น นักทรัพยากรบุคคลชำนาญการพิเศษ" required>
+              </div>
+
+              <!-- 4. พยานคนที่ 2 -->
+              <div class="sm:col-span-6">
                 <label for="witness2Name" class="form-label">ชื่อพยานคนที่ 2 <span class="required-dot">*</span></label>
                 <input type="text" id="witness2Name" class="form-input" placeholder="ระบุชื่อ-นามสกุล พยานคนที่ 2" required>
               </div>
-
-              <!-- ตำแหน่งพยานคนที่ 2 (ตามต้นแบบมีผู้อำนวยการกลุ่มบริหารทรัพยากรบุคคล) -->
               <div class="sm:col-span-6">
-                <label for="witness1Position" class="form-label">ตำแหน่งพยานคนที่ 1 (ถ้ามี)</label>
-                <input type="text" id="witness1Position" class="form-input" placeholder="เช่น นักทรัพยากรบุคคลชำนาญการพิเศษ">
-              </div>
-              <div class="sm:col-span-6">
-                <label for="witness2Position" class="form-label">ตำแหน่งพยานคนที่ 2 (ตามต้นแบบสัญญา)</label>
-                <input type="text" id="witness2Position" class="form-input" placeholder="เช่น ผู้อำนวยการกลุ่มบริหารทรัพยากรบุคคล">
+                <label for="witness2Position" class="form-label">ตำแหน่งพยานคนที่ 2 (พิมพ์เพิ่มเองได้) <span class="required-dot">*</span></label>
+                <input type="text" id="witness2Position" class="form-input" placeholder="เช่น ผู้อำนวยการกลุ่มบริหารทรัพยากรบุคคล" required>
               </div>
             </div>
           </div>
@@ -575,11 +662,16 @@
 
       <!-- Submit / Generate Contract Bar -->
       <div class="bg-white rounded-xl border border-slate-200 p-4 sm:p-5 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div class="flex items-center gap-3">
-          <input type="checkbox" id="useThaiNumerals" class="w-4 h-4 accent-brand-navy rounded cursor-pointer">
-          <label for="useThaiNumerals" class="text-sm font-medium text-slate-700 cursor-pointer">
-            แสดงตัวเลขไทย (๐-๙) ในเอกสารสัญญาจ้างราชการ (ตามต้นแบบไฟล์ Word)
-          </label>
+        <div class="text-xs sm:text-sm text-slate-600 flex flex-wrap items-center gap-2">
+          <span class="inline-flex items-center px-2.5 py-1 rounded-md bg-blue-50 text-brand-navy font-semibold border border-blue-200">
+            ฟอนต์: TH SarabunPSK
+          </span>
+          <span class="inline-flex items-center px-2.5 py-1 rounded-md bg-blue-50 text-brand-navy font-semibold border border-blue-200">
+            ตัวเลขไทย (๐-๙) ทั้งฉบับ
+          </span>
+          <span class="inline-flex items-center px-2.5 py-1 rounded-md bg-blue-50 text-brand-navy font-semibold border border-blue-200">
+            กั้นหน้า ๒.๐ ซม. / กั้นหลัง ๑.๕ ซม.
+          </span>
         </div>
 
         <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto justify-end">
@@ -602,14 +694,14 @@
       <!-- Preview Control Bar (Hidden on Print) -->
       <div class="no-print mb-5 bg-white rounded-xl border border-slate-200 p-4 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 class="text-base sm:text-lg font-bold text-brand-navy flex items-center gap-2">
-            <span>ตัวอย่างเอกสารราชการขนาด A4 (Print Preview)</span>
+          <h2 class="text-base sm:text-lg font-bold text-brand-navy flex flex-wrap items-center gap-2">
+            <span>ตัวอย่างเอกสารสัญญาจ้างขนาด A4 (TH SarabunPSK • เลขไทยทั้งหมด)</span>
             <span id="sampleBadgeInPreview" class="hidden text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
               ข้อมูลตัวอย่าง (Sample Data)
             </span>
           </h2>
           <p class="text-xs sm:text-sm text-slate-600">
-            ตรวจสอบความถูกต้องของข้อความตามระเบียบสำนักนายกรัฐมนตรีว่าด้วยพนักงานราชการ พ.ศ. 2547
+            ตั้งค่าระยะขอบกระดาษมาตรฐาน: กั้นหน้า ๒.๐ ซม. | กั้นหลัง ๑.๕ ซม. | ตรวจคำผิดและจัดตัดคำภาษาไทยเรียบร้อยแล้ว
           </p>
         </div>
 
@@ -626,33 +718,33 @@
         </div>
       </div>
 
-      <!-- Summary Banner of Old vs New Contract (Hidden on Print) -->
+      <!-- Summary Banner (Hidden on Print) -->
       <div class="no-print mb-5 grid grid-cols-1 md:grid-cols-3 gap-3.5">
         <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm">
-          <span class="text-xs text-slate-500 block">ข้อมูลผู้ต่อสัญญาและสังกัด</span>
+          <span class="text-xs text-slate-500 block">ข้อมูลพนักงานราชการและสังกัด</span>
           <strong id="summaryEmployee" class="text-sm text-slate-900 block mt-0.5">-</strong>
           <span id="summaryPosition" class="text-xs text-brand-blue font-medium block">-</span>
         </div>
         <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm">
-          <span class="text-xs text-slate-500 block">ประวัติสัญญาจ้างเดิม</span>
-          <strong id="summaryOldContract" class="text-sm text-slate-900 block mt-0.5">-</strong>
-          <span id="summaryOldPeriod" class="text-xs text-slate-600 block">-</span>
+          <span class="text-xs text-slate-500 block">เลขที่สัญญาจ้าง (รันตามปีปฏิทิน)</span>
+          <strong id="summaryNewContract" class="text-sm text-brand-navy block mt-0.5">-</strong>
+          <span id="summaryPeriod" class="text-xs text-slate-600 block">-</span>
         </div>
         <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm">
-          <span class="text-xs text-slate-500 block">สัญญาจ้างใหม่และค่าตอบแทน</span>
-          <strong id="summaryNewContract" class="text-sm text-brand-navy block mt-0.5">-</strong>
-          <span id="summarySalary" class="text-xs text-emerald-700 font-semibold block">-</span>
+          <span class="text-xs text-slate-500 block">อัตราค่าตอบแทนรายเดือน</span>
+          <strong id="summarySalary" class="text-sm text-emerald-700 block mt-0.5">-</strong>
+          <span id="summarySignatories" class="text-xs text-slate-600 block">-</span>
         </div>
       </div>
 
       <!-- A4 Document Sheet Container -->
       <div class="a4-preview-wrapper">
 
-        <!-- PAGE 1 & 2: MAIN CONTRACT (ตามไฟล์ สัญญาจ้าง รอบที่ 6 2568 -2571.docx) -->
-        <article class="a4-page" id="a4ContractDocument">
+        <!-- PAGE 1: สัญญาจ้างพนักงานราชการ -->
+        <article class="a4-page a4-page-standardized" id="a4ContractDocument">
           <!-- Contract Number Top Right -->
           <div class="text-right mb-2">
-            <span>สัญญาเลขที่ <span id="docContractNo" class="doc-fill">................./๒๕๖๗</span></span>
+            <span>สัญญาเลขที่ <span id="docContractNo" class="doc-fill">๐๐๑/๒๕๖๘</span></span>
           </div>
 
           <!-- Header Title -->
@@ -663,165 +755,162 @@
 
           <!-- Preamble -->
           <p class="doc-indent">
-            สัญญาจ้างพนักงานราชการฉบับนี้ ทำขึ้น ณ <span id="docMadeAtDept" class="doc-fill">กรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ</span>
+            สัญญาจ้างพนักงานราชการฉบับนี้ ทำขึ้น ณ <span id="docMadeAtDept" class="doc-fill-wrap">กรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ</span>
             เมื่อวันที่ <span id="docSignDate" class="doc-fill">๑ ตุลาคม ๒๕๖๗</span>
-            ระหว่าง <span id="docEmployerDept" class="doc-fill">กรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ</span>
-            โดย <span id="docAuthorityName" class="doc-fill">..........................................................</span>
-            ตำแหน่ง <span id="docAuthorityPos" class="doc-fill">..............................................................................</span>
+            ระหว่าง <span id="docEmployerDept" class="doc-fill-wrap">กรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ</span>
+            โดย <span id="docAuthorityName" class="doc-fill-wrap">..........................................................</span>
+            ตำแหน่ง <span id="docAuthorityPos" class="doc-fill-wrap">..............................................................................</span>
             ซึ่งต่อไปในสัญญานี้เรียกว่า “กรม” ฝ่ายหนึ่ง กับ
-            <span id="docEmpFullName" class="doc-fill">.......................................................</span>
+            <span id="docEmpFullName" class="doc-fill-wrap">.......................................................</span>
             อายุ <span id="docEmpAge" class="doc-fill">........</span> ปี
             หมายเลขประจำตัวของผู้ถือบัตรประจำตัวประชาชน <span id="docEmpNatId" class="doc-fill">...........................................</span>
             อยู่บ้านเลขที่ <span id="docAddrNo" class="doc-fill">....................</span>
-            ถนน <span id="docAddrRoad" class="doc-fill">..............................</span>
-            ซอย <span id="docAddrSoi" class="doc-fill">........................</span>
-            แขวง/ตำบล <span id="docAddrSubdistrict" class="doc-fill">..............................</span>
-            เขต/อำเภอ <span id="docAddrDistrict" class="doc-fill">..............................</span>
-            จังหวัด <span id="docAddrProvince" class="doc-fill">..............................</span>
+            ถนน <span id="docAddrRoad" class="doc-fill-wrap">..............................</span>
+            ซอย <span id="docAddrSoi" class="doc-fill-wrap">........................</span>
+            แขวง/ตำบล <span id="docAddrSubdistrict" class="doc-fill-wrap">..............................</span>
+            เขต/อำเภอ <span id="docAddrDistrict" class="doc-fill-wrap">..............................</span>
+            จังหวัด <span id="docAddrProvince" class="doc-fill-wrap">..............................</span>
             รหัสไปรษณีย์ <span id="docAddrZip" class="doc-fill">...............</span>
             โทรศัพท์ <span id="docEmpPhone" class="doc-fill">..............................</span>
-            ซึ่งต่อไปในสัญญานี้เรียกว่า “พนักงานราชการ” อีกฝ่ายหนึ่ง ทั้งสองฝ่ายต่างได้ตกลงร่วมกัน ทำสัญญาจ้างไว้ต่อกัน ดังต่อไปนี้
+            ซึ่งต่อไปในสัญญานี้เรียกว่า “พนักงานราชการ” อีกฝ่ายหนึ่ง ทั้งสองฝ่ายต่างได้ตกลงร่วมกันทำสัญญาจ้างไว้ต่อกัน ดังต่อไปนี้
           </p>
 
-          <!-- ข้อ ๑ -->
+          <!-- ข้อ ๑ (นำเลขที่ตำแหน่งออกตามคำสั่ง) -->
           <p class="doc-indent">
-            <span class="font-bold">ข้อ <span class="num-token">1</span></span> กรมตกลงจ้าง และพนักงานราชการตกลงรับจ้างทำงานให้แก่กรมโดยเป็นพนักงานราชการ ดังต่อไปนี้
+            <span class="font-bold">ข้อ ๑</span> กรมตกลงจ้าง และพนักงานราชการตกลงรับจ้างทำงานให้แก่กรม โดยเป็นพนักงานราชการ ดังต่อไปนี้
           </p>
           <div class="pl-12 mb-2 space-y-1">
             <div class="flex flex-wrap items-center gap-x-6">
-              <span>
+              <span class="min-w-[165px]">
                 <span class="doc-checkbox" id="chkSpecial"></span> พนักงานราชการพิเศษ
               </span>
               <span>
-                ลักษณะงาน <span id="docSpecialTrait" class="doc-fill">.......................................................</span>
+                ลักษณะงาน <span id="docSpecialTrait" class="doc-fill-wrap">.......................................................</span>
               </span>
             </div>
             <div class="flex flex-wrap items-center gap-x-6">
-              <span>
+              <span class="min-w-[165px]">
                 <span class="doc-checkbox" id="chkGeneral">✓</span> พนักงานราชการทั่วไป
               </span>
               <span>
-                กลุ่มงาน <span id="docJobGroup" class="doc-fill">.......................................................</span>
+                กลุ่มงาน <span id="docJobGroup" class="doc-fill-wrap">.......................................................</span>
               </span>
             </div>
-            <div class="pl-[152px]">
-              ตำแหน่ง <span id="docPositionTitle" class="doc-fill">.......................................................</span>
-              (เลขที่ตำแหน่ง <span id="docPositionNo" class="doc-fill">.............</span>
-              สังกัด <span id="docDivisionName" class="doc-fill">.........................................</span>)
+            <div class="pl-[189px]">
+              ตำแหน่ง <span id="docPositionTitle" class="doc-fill-wrap">.......................................................</span>
             </div>
           </div>
 
           <!-- ข้อ ๒ -->
           <p class="doc-indent">
-            <span class="font-bold">ข้อ <span class="num-token">2</span></span> พนักงานราชการมีหน้าที่รับผิดชอบภาระงานตามรายละเอียดที่กรมกำหนดไว้ในเอกสารแนบท้ายสัญญาจ้าง และให้ถือว่าเอกสารแนบท้ายสัญญาจ้างดังกล่าวเป็นส่วนหนึ่งของสัญญาจ้างนี้
+            <span class="font-bold">ข้อ ๒</span> พนักงานราชการมีหน้าที่รับผิดชอบภาระงานตามรายละเอียดที่กรมกำหนดไว้ในเอกสารแนบท้ายสัญญาจ้าง และให้ถือว่าเอกสารแนบท้ายสัญญาจ้างดังกล่าวเป็นส่วนหนึ่งของสัญญาจ้างนี้
           </p>
           <p class="doc-indent">
-            ในกรณีที่มีปัญหาว่างานใดเป็นหน้าที่การงานตามสัญญาจ้างนี้หรือไม่หรือกรณีที่มีข้อสงสัยเกี่ยวกับข้อความของสัญญาจ้าง หรือข้อความในเอกสารแนบท้ายสัญญาจ้าง ให้กรมเป็นผู้วินิจฉัย และพนักงานราชการจะต้องปฏิบัติตามคำวินิจฉัยนั้น
+            ในกรณีที่มีปัญหาว่างานใดเป็นหน้าที่การงานตามสัญญาจ้างนี้หรือไม่ หรือกรณีที่มีข้อสงสัยเกี่ยวกับข้อความของสัญญาจ้าง หรือข้อความในเอกสารแนบท้ายสัญญาจ้าง ให้กรมเป็นผู้วินิจฉัย และพนักงานราชการจะต้องปฏิบัติตามคำวินิจฉัยนั้น
           </p>
 
-          <!-- ข้อ ๓ -->
+          <!-- ข้อ ๓ (คำนวณปีและเดือนจากวันเริ่ม-วันสิ้นสุด และนำคำว่าต่อเนื่องจากสัญญาจ้างเดิมออกทั้งหมด) -->
           <p class="doc-indent">
-            <span class="font-bold">ข้อ <span class="num-token">3</span></span> กรมตกลงจ้างพนักงานราชการมีกำหนด <span id="docDurationYears" class="doc-fill">....</span> ปี <span id="docDurationMonths" class="doc-fill"> - </span> เดือน
+            <span class="font-bold">ข้อ ๓</span> กรมตกลงจ้างพนักงานราชการมีกำหนด <span id="docDurationYears" class="doc-fill">....</span> ปี <span id="docDurationMonths" class="doc-fill">....</span> เดือน
             เริ่มตั้งแต่วันที่ <span id="docNewStartDay" class="doc-fill">......</span> เดือน <span id="docNewStartMonth" class="doc-fill">....................</span> พ.ศ. <span id="docNewStartYear" class="doc-fill">..........</span>
             และสิ้นสุดในวันที่ <span id="docNewEndDay" class="doc-fill">......</span> เดือน <span id="docNewEndMonth" class="doc-fill">....................</span> พ.ศ. <span id="docNewEndYear" class="doc-fill">..........</span>
-            <span id="docOldContractRef" class="text-[13pt]">(ต่อเนื่องจากสัญญาจ้างเดิมเลขที่ .............)</span>
           </p>
           <p class="doc-indent">
-            กำหนดระยะเวลาการปฏิบัติงานที่กรมให้เป็นไปตามรายละเอียดแนบท้ายสัญญาจ้างและให้ถือว่าเอกสารแนบท้ายสัญญาจ้างดังกล่าวเป็นส่วนหนึ่งของสัญญาจ้าง
+            กำหนดระยะเวลาการปฏิบัติงานที่กรมให้เป็นไปตามรายละเอียดแนบท้ายสัญญาจ้าง และให้ถือว่าเอกสารแนบท้ายสัญญาจ้างดังกล่าวเป็นส่วนหนึ่งของสัญญาจ้าง
           </p>
 
           <!-- ข้อ ๔ -->
           <p class="doc-indent">
-            <span class="font-bold">ข้อ <span class="num-token">4</span></span> กรมตกลงจ่าย และพนักงานราชการตกลงรับค่าตอบแทน ดังนี้
+            <span class="font-bold">ข้อ ๔</span> กรมตกลงจ่าย และพนักงานราชการตกลงรับค่าตอบแทน ดังนี้
             อัตราค่าตอบแทนเดือนละ <span id="docSalaryNumber" class="doc-fill">....................</span> บาท
-            (<span id="docSalaryWords" class="doc-fill">................................................................</span>)
+            (<span id="docSalaryWords" class="doc-fill-wrap">................................................................</span>)
           </p>
           <p class="doc-indent">
             ทั้งนี้ พนักงานราชการต้องเป็นผู้รับผิดชอบในการเสียภาษีเงินได้ โดยกรมจะเป็นผู้หักไว้ ณ ที่จ่าย
           </p>
 
-          <!-- ข้อ ๕ - ข้อ ๑๕ -->
+          <!-- ข้อ ๕ - ข้อ ๑๕ (ใช้เลขไทยทั้งหมด ตรวจคำผิดและตัดคำให้สวยงาม) -->
           <p class="doc-indent">
-            <span class="font-bold">ข้อ <span class="num-token">5</span></span> พนักงานราชการอาจได้รับสิทธิประโยชน์อื่น ตามระเบียบสำนักนายกรัฐมนตรีว่าด้วยพนักงานราชการ พ.ศ. <span class="num-token">2547</span> หรือตามที่คณะกรรมการ หรือกรมกำหนด
+            <span class="font-bold">ข้อ ๕</span> พนักงานราชการอาจได้รับสิทธิประโยชน์อื่น ตามระเบียบสำนักนายกรัฐมนตรีว่าด้วยพนักงานราชการ พ.ศ. ๒๕๔๗ หรือตามที่คณะกรรมการ หรือกรมกำหนด
           </p>
           <p class="doc-indent">
-            <span class="font-bold">ข้อ <span class="num-token">6</span></span> กรมจะทำการประเมินผลการปฏิบัติงานของพนักงานราชการตามหลักเกณฑ์ และวิธีการที่กรมกำหนด
+            <span class="font-bold">ข้อ ๖</span> กรมจะทำการประเมินผลการปฏิบัติงานของพนักงานราชการตามหลักเกณฑ์ และวิธีการที่กรมกำหนด
           </p>
           <p class="doc-indent">
             ผลการประเมินตามวรรคหนึ่งเป็นประการใด ให้ถือเป็นที่สุด
           </p>
           <p class="doc-indent">
-            <span class="font-bold">ข้อ <span class="num-token">7</span></span> สัญญานี้สิ้นสุดลงเมื่อเข้ากรณีใดกรณีหนึ่ง ดังต่อไปนี้
+            <span class="font-bold">ข้อ ๗</span> สัญญานี้สิ้นสุดลงเมื่อเข้ากรณีใดกรณีหนึ่ง ดังต่อไปนี้
           </p>
-          <div class="pl-14 space-y-0.5 mb-1">
-            <p>(<span class="num-token">1</span>) เข้ากรณีใดกรณีหนึ่งตามที่กำหนดในข้อ <span class="num-token">28</span> ของระเบียบสำนักนายกรัฐมนตรีว่าด้วยพนักงานราชการ พ.ศ. <span class="num-token">2547</span></p>
-            <p>(<span class="num-token">2</span>) พนักงานราชการลาออกจากการปฏิบัติงาน ตามข้อ <span class="num-token">29</span> ของระเบียบสำนักนายกรัฐมนตรีว่าด้วยพนักงานราชการ พ.ศ. <span class="num-token">2547</span></p>
-            <p>(<span class="num-token">3</span>) มีการเลิกสัญญาจ้างตามข้อ <span class="num-token">30</span> ของระเบียบสำนักนายกรัฐมนตรีว่าด้วยพนักงานราชการ พ.ศ. <span class="num-token">2547</span></p>
-            <p>(<span class="num-token">4</span>) เหตุอื่นๆ ดังต่อไปนี้ .................................................................................................................</p>
-            <p>(<span class="num-token">5</span>) เหตุอื่น ๆ ตามที่กรมประกาศกำหนด</p>
+          <div class="pl-12 space-y-0.5 mb-1">
+            <p>(๑) เข้ากรณีใดกรณีหนึ่งตามที่กำหนดในข้อ ๒๘ ของระเบียบสำนักนายกรัฐมนตรีว่าด้วยพนักงานราชการ พ.ศ. ๒๕๔๗</p>
+            <p>(๒) พนักงานราชการลาออกจากการปฏิบัติงาน ตามข้อ ๒๙ ของระเบียบสำนักนายกรัฐมนตรีว่าด้วยพนักงานราชการ พ.ศ. ๒๕๔๗</p>
+            <p>(๓) มีการเลิกสัญญาจ้างตามข้อ ๓๐ ของระเบียบสำนักนายกรัฐมนตรีว่าด้วยพนักงานราชการ พ.ศ. ๒๕๔๗</p>
+            <p>(๔) เหตุอื่น ๆ ดังต่อไปนี้ .................................................................................................................</p>
+            <p>(๕) เหตุอื่น ๆ ตามที่กรมประกาศกำหนด</p>
           </div>
           <p class="doc-indent">
-            <span class="font-bold">ข้อ <span class="num-token">8</span></span> พนักงานราชการมีหน้าที่ต้องรักษาวินัยและยอมรับการลงโทษทางวินัยตามที่กำหนดในระเบียบสำนักนายกรัฐมนตรีว่าด้วยพนักงานราชการ พ.ศ. <span class="num-token">2547</span> และหรือที่สำนักงานประกาศกำหนด
+            <span class="font-bold">ข้อ ๘</span> พนักงานราชการมีหน้าที่ต้องรักษาวินัยและยอมรับการลงโทษทางวินัยตามที่กำหนดในระเบียบสำนักนายกรัฐมนตรีว่าด้วยพนักงานราชการ พ.ศ. ๒๕๔๗ และหรือที่สำนักงานประกาศกำหนด
           </p>
           <p class="doc-indent">
-            <span class="font-bold">ข้อ <span class="num-token">9</span></span> ในกรณีพนักงานราชการละทิ้งงานก่อนครบกำหนดเวลาตามข้อ <span class="num-token">3</span> หรือปฏิบัติงานใด ๆ จนเป็นเหตุให้เกิดความเสียหายแก่กรม ในระหว่างอายุสัญญาพนักงานราชการยินยอมชดใช้ค่าเสียหายให้กับกรมทุกประการภายในเวลาที่กรมเรียกร้องให้ชดใช้ และยินยอมให้กรมหักค่าจ้างหรือเงินอื่นใดที่พนักงานราชการมีสิทธิได้รับจากกรมเป็นการชดใช้ค่าเสียหายได้เว้นแต่ความเสียหายนั้นเกิดจากเหตุสุดวิสัย
+            <span class="font-bold">ข้อ ๙</span> ในกรณีพนักงานราชการละทิ้งงานก่อนครบกำหนดเวลาตามข้อ ๓ หรือปฏิบัติงานใด ๆ จนเป็นเหตุให้เกิดความเสียหายแก่กรม ในระหว่างอายุสัญญา พนักงานราชการยินยอมชดใช้ค่าเสียหายให้กับกรมทุกประการภายในเวลาที่กรมเรียกร้องให้ชดใช้ และยินยอมให้กรมหักค่าจ้างหรือเงินอื่นใดที่พนักงานราชการมีสิทธิได้รับจากกรมเป็นการชดใช้ค่าเสียหายได้ เว้นแต่ความเสียหายนั้นเกิดจากเหตุสุดวิสัย
           </p>
           <p class="doc-indent">
-            <span class="font-bold">ข้อ <span class="num-token">10</span></span> พนักงานราชการจะต้องปฏิบัติตามระเบียบสำนักนายกรัฐมนตรีว่าด้วยพนักงานราชการ พ.ศ. <span class="num-token">2547</span> ประกาศหรือมติของคณะกรรมการบริหารพนักงานราชการ ประกาศหรือคำสั่งของกรมที่ออกตามระเบียบสำนักนายกรัฐมนตรีว่าด้วยพนักงานราชการ พ.ศ. <span class="num-token">2547</span>
+            <span class="font-bold">ข้อ ๑๐</span> พนักงานราชการจะต้องปฏิบัติตามระเบียบสำนักนายกรัฐมนตรีว่าด้วยพนักงานราชการ พ.ศ. ๒๕๔๗ ประกาศหรือมติของคณะกรรมการบริหารพนักงานราชการ ประกาศหรือคำสั่งของกรมที่ออกตามระเบียบสำนักนายกรัฐมนตรีว่าด้วยพนักงานราชการ พ.ศ. ๒๕๔๗
           </p>
           <p class="doc-indent">
-            <span class="font-bold">ข้อ <span class="num-token">11</span></span> พนักงานราชการจะต้องประพฤติ และปฏิบัติตามกฎหมาย ระเบียบ ข้อบังคับ และคำสั่งของทางราชการ ทั้งที่ได้ออกใช้บังคับแก่พนักงานราชการอยู่แล้วก่อนวันที่ลงนามในสัญญาจ้างนี้ และที่จะออกใช้บังคับต่อไปในภายหลัง โดยพนักงานราชการยินยอมให้ถือว่า กฎหมาย ระเบียบ หรือคำสั่งต่าง ๆ ดังกล่าว เป็นส่วนหนึ่งของสัญญาจ้างนี้
+            <span class="font-bold">ข้อ ๑๑</span> พนักงานราชการจะต้องประพฤติ และปฏิบัติตามกฎหมาย ระเบียบ ข้อบังคับ และคำสั่งของทางราชการ ทั้งที่ได้ออกใช้บังคับแก่พนักงานราชการอยู่แล้วก่อนวันที่ลงนามในสัญญาจ้างนี้ และที่จะออกใช้บังคับต่อไปในภายหลัง โดยพนักงานราชการยินยอมให้ถือว่า กฎหมาย ระเบียบ หรือคำสั่งต่าง ๆ ดังกล่าว เป็นส่วนหนึ่งของสัญญาจ้างนี้
           </p>
           <p class="doc-indent">
-            <span class="font-bold">ข้อ <span class="num-token">12</span></span> พนักงานราชการจะต้องปฏิบัติงานให้กรมตามที่รับมอบหมายด้วยความซื่อสัตย์สุจริต และตั้งใจปฏิบัติงานอย่างเต็มกำลังความสามารถของตน โดยแสวงหาความรู้และทักษะเพิ่มเติมหรือกระทำการใด ๆ เพื่อให้ผลงานในหน้าที่มีคุณภาพดีขึ้น ทั้งนี้ ต้องรักษาผลประโยชน์ และชื่อเสียงของราชการ และไม่เปิดเผยความลับหรือข้อมูลทางราชการให้ผู้หนึ่งผู้ใดทราบ โดยมิได้รับอนุญาตจากผู้รับผิดชอบงานนั้น ๆ
+            <span class="font-bold">ข้อ ๑๒</span> พนักงานราชการจะต้องปฏิบัติงานให้กรมตามที่รับมอบหมายด้วยความซื่อสัตย์สุจริต และตั้งใจปฏิบัติงานอย่างเต็มกำลังความสามารถของตน โดยแสวงหาความรู้และทักษะเพิ่มเติมหรือกระทำการใด ๆ เพื่อให้ผลงานในหน้าที่มีคุณภาพดีขึ้น ทั้งนี้ ต้องรักษาผลประโยชน์และชื่อเสียงของราชการ และไม่เปิดเผยความลับหรือข้อมูลทางราชการให้ผู้หนึ่งผู้ใดทราบ โดยมิได้รับอนุญาตจากผู้รับผิดชอบงานนั้น ๆ
           </p>
           <p class="doc-indent">
-            <span class="font-bold">ข้อ <span class="num-token">13</span></span> ในระหว่างอายุสัญญาจ้างนี้ หากพนักงานราชการปฏิบัติงานตามสัญญาจ้างแล้วก่อให้เกิดผลงานสร้างสรรค์ขึ้นใหม่ ให้ลิขสิทธิ์ของผลงานดังกล่าวเป็นกรรมสิทธิ์ของกรม
+            <span class="font-bold">ข้อ ๑๓</span> ในระหว่างอายุสัญญาจ้างนี้ หากพนักงานราชการปฏิบัติงานตามสัญญาจ้างแล้วก่อให้เกิดผลงานสร้างสรรค์ขึ้นใหม่ ให้ลิขสิทธิ์ของผลงานดังกล่าวเป็นกรรมสิทธิ์ของกรม
           </p>
           <p class="doc-indent">
-            <span class="font-bold">ข้อ <span class="num-token">14</span></span> พนักงานราชการจะต้องรับผิดต่อการละเมิดบทบัญญัติแห่งกฎหมายหรือสิทธิใดๆ ในสิทธิบัตรหรือลิขสิทธิ์ของบุคคลที่สาม ซึ่งพนักงานราชการนำมาใช้ในการปฏิบัติตามสัญญานี้
+            <span class="font-bold">ข้อ ๑๔</span> พนักงานราชการจะต้องรับผิดต่อการละเมิดบทบัญญัติแห่งกฎหมายหรือสิทธิใด ๆ ในสิทธิบัตรหรือลิขสิทธิ์ของบุคคลที่สาม ซึ่งพนักงานราชการนำมาใช้ในการปฏิบัติตามสัญญานี้
           </p>
           <p class="doc-indent">
-            <span class="font-bold">ข้อ <span class="num-token">15</span></span> สิทธิ หน้าที่ และความรับผิดชอบของพนักงานราชการนอกเหนือจากที่กำหนดไว้ในสัญญาจ้างนี้ ให้เป็นไปตามกฎหมาย ระเบียบ ข้อบังคับที่ทางราชการกำหนดไว้
+            <span class="font-bold">ข้อ ๑๕</span> สิทธิ หน้าที่ และความรับผิดชอบของพนักงานราชการนอกเหนือจากที่กำหนดไว้ในสัญญาจ้างนี้ ให้เป็นไปตามกฎหมาย ระเบียบ ข้อบังคับที่ทางราชการกำหนดไว้
           </p>
           <p class="doc-indent">
             สัญญานี้ทำขึ้นสองฉบับมีข้อความถูกต้องตรงกัน คู่สัญญาอ่าน ตรวจสอบ และเข้าใจข้อความในสัญญาโดยละเอียดแล้ว จึงลงลายมือชื่อไว้เป็นหลักฐานต่อหน้าพยาน ณ วัน เดือน ปีดังกล่าวข้างต้น และต่างฝ่ายต่างเก็บรักษาไว้ฝ่ายละฉบับ
           </p>
 
-          <!-- Signature Block (4 Signatories: ผู้ว่าจ้าง, พนักงานราชการ, พยาน 1, พยาน 2) -->
-          <div class="mt-8 grid grid-cols-2 gap-y-8 gap-x-6 text-center">
+          <!-- Signature Block (ผู้ว่าจ้าง, พนักงานราชการ, พยาน ๑, พยาน ๒ พร้อมตำแหน่งที่กำหนดเองได้ทั้งหมด) -->
+          <div class="mt-7 grid grid-cols-2 gap-y-7 gap-x-4 text-center">
             <!-- ผู้ว่าจ้าง -->
             <div>
               <div class="mb-1">(ลงชื่อ)......................................................ผู้ว่าจ้าง</div>
-              <div>(<span id="sigAuthorityName" class="doc-fill">...............................................</span>)</div>
-              <div id="sigAuthorityPos" class="text-[13pt] mt-0.5">อธิบดีกรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ</div>
+              <div>(<span id="sigAuthorityName" class="doc-fill-wrap">...............................................</span>)</div>
+              <div id="sigAuthorityPos" class="mt-0.5 px-2">อธิบดีกรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ</div>
             </div>
 
             <!-- พนักงานราชการ -->
             <div>
               <div class="mb-1">(ลงชื่อ)......................................................พนักงานราชการ</div>
-              <div>(<span id="sigEmpName" class="doc-fill">...............................................</span>)</div>
-              <div id="sigEmpPos" class="text-[13pt] mt-0.5">ตำแหน่ง ...............................................</div>
+              <div>(<span id="sigEmpName" class="doc-fill-wrap">...............................................</span>)</div>
+              <div id="sigEmpPos" class="mt-0.5 px-2">ตำแหน่ง ...............................................</div>
             </div>
 
-            <!-- พยาน 1 -->
+            <!-- พยาน ๑ -->
             <div>
               <div class="mb-1">(ลงชื่อ)......................................................พยาน</div>
-              <div>(<span id="sigWitness1Name" class="doc-fill">...............................................</span>)</div>
-              <div id="sigWitness1Pos" class="text-[13pt] mt-0.5"></div>
+              <div>(<span id="sigWitness1Name" class="doc-fill-wrap">...............................................</span>)</div>
+              <div id="sigWitness1Pos" class="mt-0.5 px-2"></div>
             </div>
 
-            <!-- พยาน 2 -->
+            <!-- พยาน ๒ -->
             <div>
               <div class="mb-1">(ลงชื่อ)......................................................พยาน</div>
-              <div>(<span id="sigWitness2Name" class="doc-fill">...............................................</span>)</div>
-              <div id="sigWitness2Pos" class="text-[13pt] mt-0.5">ผู้อำนวยการกลุ่มบริหารทรัพยากรบุคคล</div>
+              <div>(<span id="sigWitness2Name" class="doc-fill-wrap">...............................................</span>)</div>
+              <div id="sigWitness2Pos" class="mt-0.5 px-2">ผู้อำนวยการกลุ่มบริหารทรัพยากรบุคคล</div>
             </div>
           </div>
         </article>
 
-        <!-- PAGE 2: เอกสารแนบท้ายสัญญาจ้าง ผนวก ก. และ ผนวก ข. (ตามไฟล์ต้นฉบับ) -->
-        <article class="a4-page">
+        <!-- PAGE 2: เอกสารแนบท้ายสัญญาจ้าง ผนวก ก. และ ผนวก ข. -->
+        <article class="a4-page a4-page-standardized">
           <div class="text-center font-bold mb-4">
             <div class="text-[15pt]">เอกสารแนบท้ายสัญญาจ้าง</div>
             <div class="text-[14pt]">ผนวก ก.</div>
@@ -830,27 +919,27 @@
           </div>
 
           <p class="mb-2">
-            <span class="font-bold"><span class="num-token">1</span>. พนักงานราชการพิเศษ</span> (ให้ระบุขอบเขตของลักษณะการปฏิบัติงานระยะเวลาผลผลิต หรือวิธีปฏิบัติงานกรณีอื่นที่แสดงให้เห็นผลสำเร็จของงาน)
+            <span class="font-bold">๑. พนักงานราชการพิเศษ</span> (ให้ระบุขอบเขตของลักษณะการปฏิบัติงาน ระยะเวลา ผลผลิต หรือวิธีปฏิบัติงานกรณีอื่นที่แสดงให้เห็นผลสำเร็จของงาน)
           </p>
           <p class="pl-8 mb-3 text-slate-800" id="annexASpecialText">- ไม่มี -</p>
 
           <p class="mb-2">
-            <span class="font-bold"><span class="num-token">2</span>. พนักงานราชการทั่วไป</span> (ให้ระบุหน้าที่ความรับผิดชอบหรือผลผลิตตามระยะเวลา)
+            <span class="font-bold">๒. พนักงานราชการทั่วไป</span> (ให้ระบุหน้าที่ความรับผิดชอบหรือผลผลิตตามระยะเวลา)
           </p>
           <p class="pl-8 mb-4" id="annexAGeneralText">
-            ปฏิบัติงานในตำแหน่ง <span class="doc-fill" id="annexAPosition">....................</span>
-            กลุ่มงาน <span class="doc-fill" id="annexAGroup">....................</span>
-            สังกัด <span class="doc-fill" id="annexADivision">....................</span>
+            ปฏิบัติงานในตำแหน่ง <span class="doc-fill-wrap" id="annexAPosition">....................</span>
+            กลุ่มงาน <span class="doc-fill-wrap" id="annexAGroup">....................</span>
+            สังกัด <span class="doc-fill-wrap" id="annexADivision">....................</span>
             ตามมาตรฐานกำหนดตำแหน่งและภาระงานที่ส่วนราชการมอบหมาย
           </p>
 
           <div class="mb-6">
             <p class="font-bold underline mb-1">หมายเหตุ</p>
             <p class="doc-indent">
-              <span class="num-token">1</span>. ในกรณีที่กรม/สำนักงานได้กำหนดรายละเอียดมาตรฐานทั่วไปของงานในตำแหน่งใดไว้แล้ว อาจกำหนดหน้าที่ความรับผิดชอบของพนักงานราชการให้ปฏิบัติตามที่กรม/สำนักงานกำหนดไว้ สำหรับตำแหน่งนั้นก็ได้
+              ๑. ในกรณีที่กรม/สำนักงานได้กำหนดรายละเอียดมาตรฐานทั่วไปของงานในตำแหน่งใดไว้แล้ว อาจกำหนดหน้าที่ความรับผิดชอบของพนักงานราชการให้ปฏิบัติตามที่กรม/สำนักงานกำหนดไว้สำหรับตำแหน่งนั้นก็ได้
             </p>
             <p class="doc-indent">
-              <span class="num-token">2</span>. ในกรณีจำเป็นเพื่อประโยชน์ของทางราชการ กรม/สำนักงานอาจมีคำสั่งมอบหมายงานให้พนักงานราชการปฏิบัติเป็นพิเศษนอกเหนือจากขอบเขตหน้าที่ความรับผิดชอบที่กำหนดไว้ได้ โดยไม่ต้องแก้ไขสัญญา และพนักงานราชการยินยอมปฏิบัติตามคำสั่งของกรม/สำนักงาน โดยถือเป็นการกำหนดหน้าที่ความรับผิดชอบตามสัญญานี้
+              ๒. ในกรณีจำเป็นเพื่อประโยชน์ของทางราชการ กรม/สำนักงานอาจมีคำสั่งมอบหมายงานให้พนักงานราชการปฏิบัติเป็นพิเศษนอกเหนือจากขอบเขตหน้าที่ความรับผิดชอบที่กำหนดไว้ได้ โดยไม่ต้องแก้ไขสัญญา และพนักงานราชการยินยอมปฏิบัติตามคำสั่งของกรม/สำนักงาน โดยถือเป็นการกำหนดหน้าที่ความรับผิดชอบตามสัญญานี้
             </p>
           </div>
 
@@ -864,28 +953,28 @@
           </div>
 
           <div class="mb-3">
-            <p class="font-bold"><span class="num-token">1</span>. พนักงานราชการพิเศษ</p>
+            <p class="font-bold">๑. พนักงานราชการพิเศษ</p>
             <div class="pl-10 space-y-1">
               <div><span class="doc-checkbox" id="chkAnnexBSpecNormal"></span> ปฏิบัติงานตามเวลาการปฏิบัติราชการปกติ</div>
               <div><span class="doc-checkbox"></span> ปฏิบัติงานตามระยะเวลา ดังนี้ ........................................................................</div>
               <div><span class="doc-checkbox"></span> ปฏิบัติงานตามผลผลิตของงาน ดังนี้ ..................................................................</div>
-              <div><span class="doc-checkbox"></span> อื่นๆ ..........................................................................................................</div>
+              <div><span class="doc-checkbox"></span> อื่น ๆ ..........................................................................................................</div>
             </div>
           </div>
 
           <div class="mb-4">
-            <p class="font-bold"><span class="num-token">2</span>. พนักงานราชการทั่วไป</p>
+            <p class="font-bold">๒. พนักงานราชการทั่วไป</p>
             <div class="pl-10 space-y-1">
               <div><span class="doc-checkbox" id="chkAnnexBGenNormal">✓</span> ปฏิบัติงานตามเวลาการปฏิบัติราชการปกติ</div>
               <div><span class="doc-checkbox"></span> ปฏิบัติงานตามระยะเวลา ดังนี้ ........................................................................</div>
-              <div><span class="doc-checkbox"></span> อื่นๆ ..........................................................................................................</div>
+              <div><span class="doc-checkbox"></span> อื่น ๆ ..........................................................................................................</div>
             </div>
           </div>
 
           <div>
             <p class="font-bold underline mb-1">หมายเหตุ</p>
             <p class="doc-indent">
-              ในกรณีที่มีความจำเป็นเพื่อประโยชน์ของทางราชการ กรม/สำนักงาน อาจมีคำสั่งเปลี่ยนแปลงระยะเวลาการมาปฏิบัติหน้าที่หรือมีคำสั่งให้ปฏิบัติหน้าที่เป็นอย่างอื่นได้โดยไม่ต้องแก้ไขสัญญา และพนักงานราชการยินยอมปฏิบัติตามคำสั่งกรม/สำนักงาน โดยถือเป็นการกำหนดระยะเวลาการมาปฏิบัติงานตามสัญญานี้
+              ในกรณีที่มีความจำเป็นเพื่อประโยชน์ของทางราชการ กรม/สำนักงานอาจมีคำสั่งเปลี่ยนแปลงระยะเวลาการมาปฏิบัติหน้าที่หรือมีคำสั่งให้ปฏิบัติหน้าที่เป็นอย่างอื่นได้โดยไม่ต้องแก้ไขสัญญา และพนักงานราชการยินยอมปฏิบัติตามคำสั่งกรม/สำนักงาน โดยถือเป็นการกำหนดระยะเวลาการมาปฏิบัติงานตามสัญญานี้
             </p>
           </div>
         </article>
@@ -897,7 +986,18 @@
 
   <script>
     // ==========================================
-    // 1. ฟังก์ชันแปลงตัวเลขเงินเดือนเป็นตัวอักษรภาษาไทย (BahtText)
+    // 1. ฟังก์ชันแปลงเลขอารบิกเป็นเลขไทย (๐-๙) ทั้งหมด
+    // ==========================================
+    function toThaiDigits(str) {
+      if (str === null || str === undefined) return '';
+      const thaiDigits = ['๐', '๑', '๒', '๓', '๔', '๕', '๖', '๗', '๘', '๙'];
+      return String(str).replace(/[0-9]/g, function(w) {
+        return thaiDigits[+w];
+      });
+    }
+
+    // ==========================================
+    // 2. ฟังก์ชันแปลงตัวเลขเงินเดือนเป็นตัวอักษรภาษาไทย (BahtText)
     // ==========================================
     function numberToThaiBahtText(amountInput) {
       if (amountInput === null || amountInput === undefined || amountInput === '') {
@@ -957,24 +1057,12 @@
     }
 
     // ==========================================
-    // 2. ฟังก์ชันจัดการวันที่ภาษาไทยแบบราชการ และเลขไทย
+    // 3. ฟังก์ชันจัดการวันที่ภาษาไทย และคำนวณระยะเวลา (ปี / เดือน) จากวันเริ่ม-วันสิ้นสุด
     // ==========================================
     const THAI_MONTHS = [
       'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
       'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
     ];
-
-    function toThaiDigits(str) {
-      const thaiDigits = ['๐', '๑', '๒', '๓', '๔', '๕', '๖', '๗', '๘', '๙'];
-      return String(str).replace(/[0-9]/g, function(w) {
-        return thaiDigits[+w];
-      });
-    }
-
-    function applyNumeralPreference(str) {
-      const useThai = document.getElementById('useThaiNumerals').checked;
-      return useThai ? toThaiDigits(str) : String(str);
-    }
 
     function parseDateComponents(isoDateStr) {
       if (!isoDateStr) return null;
@@ -986,16 +1074,54 @@
       if (isNaN(yearCE) || isNaN(monthIdx) || isNaN(day)) return null;
       return {
         day: day,
+        monthIdx: monthIdx,
         monthName: THAI_MONTHS[monthIdx] || '',
+        yearCE: yearCE,
         yearBE: yearCE + 543
       };
     }
 
-    function formatOfficialThaiDate(isoDateStr, useThaiNum = false) {
+    function formatOfficialThaiDate(isoDateStr) {
       const comp = parseDateComponents(isoDateStr);
       if (!comp) return '-';
-      const formatted = `${comp.day} ${comp.monthName} ${comp.yearBE}`;
-      return useThaiNum ? toThaiDigits(formatted) : formatted;
+      return toThaiDigits(`${comp.day} ${comp.monthName} ${comp.yearBE}`);
+    }
+
+    /**
+     * คำนวณระยะเวลาสัญญาจ้าง (ปี / เดือน) จากวันที่เริ่มต้น และวันที่สิ้นสุด
+     * รองรับการนับแบบสัญญาจ้างราชการ (นับรวมวันสิ้นสุดสัญญา คือ endDate + 1 วัน)
+     * เช่น 1 ต.ค. 2567 ถึง 30 ก.ย. 2571 = 4 ปี 0 เดือน
+     */
+    function calculateContractDuration(startIso, endIso) {
+      if (!startIso || !endIso) {
+        return { years: 0, months: 0, days: 0, valid: false };
+      }
+      const start = new Date(startIso + 'T00:00:00');
+      const end = new Date(endIso + 'T00:00:00');
+      if (isNaN(start.getTime()) || isNaN(end.getTime()) || end < start) {
+        return { years: 0, months: 0, days: 0, valid: false };
+      }
+
+      // บวก 1 วันเพื่อให้ครบวงรอบสัญญาจ้างราชการ (เช่น 1 ต.ค. -> 30 ก.ย. ถัดไป คือครบเต็มเดือน/ปี)
+      const adjustedEnd = new Date(end.getTime());
+      adjustedEnd.setDate(adjustedEnd.getDate() + 1);
+
+      let years = adjustedEnd.getFullYear() - start.getFullYear();
+      let months = adjustedEnd.getMonth() - start.getMonth();
+      let days = adjustedEnd.getDate() - start.getDate();
+
+      if (days < 0) {
+        months -= 1;
+        const prevMonth = new Date(adjustedEnd.getFullYear(), adjustedEnd.getMonth(), 0);
+        days += prevMonth.getDate();
+      }
+
+      if (months < 0) {
+        years -= 1;
+        months += 12;
+      }
+
+      return { years, months, days, valid: true };
     }
 
     // Format 13-digit National ID: X-XXXX-XXXXX-XX-X
@@ -1011,7 +1137,52 @@
     }
 
     // ==========================================
-    // 3. การเชื่อมโยง Event และการคำนวณอัตโนมัติในฟอร์ม
+    // 4. ระบบรันเลขที่สัญญาตามปีปฏิทิน (พ.ศ.)
+    // ==========================================
+    const contractSeqInput = document.getElementById('contractSeqNo');
+    const contractYearInput = document.getElementById('contractCalendarYear');
+    const contractNoPreviewBox = document.getElementById('contractNoPreviewBox');
+    const contractSignDateInput = document.getElementById('contractSignDate');
+
+    // ตั้งค่าปีปฏิทินเริ่มต้นจากปีปัจจุบัน (พ.ศ.)
+    const currentYearBE = new Date().getFullYear() + 543;
+    contractYearInput.value = currentYearBE;
+
+    function getFormattedContractNoThai() {
+      const seq = (contractSeqInput.value || '001').trim();
+      const yearBE = (contractYearInput.value || String(currentYearBE)).trim();
+      return toThaiDigits(`${seq}/${yearBE}`);
+    }
+
+    function updateContractNoPreview() {
+      contractNoPreviewBox.textContent = getFormattedContractNoThai();
+    }
+
+    contractSeqInput.addEventListener('input', updateContractNoPreview);
+    contractYearInput.addEventListener('input', updateContractNoPreview);
+
+    // ปุ่ม +1 รันเลขลำดับสัญญาถัดไป
+    document.getElementById('btnNextSeq').addEventListener('click', function() {
+      const currentRaw = contractSeqInput.value.trim();
+      const digitsOnly = currentRaw.replace(/\D/g, '');
+      const padLen = Math.max(digitsOnly.length, 3);
+      const nextNum = (parseInt(digitsOnly || '0', 10) + 1);
+      contractSeqInput.value = String(nextNum).padStart(padLen, '0');
+      updateContractNoPreview();
+    });
+
+    // เมื่อเปลี่ยนวันที่ทำสัญญา ให้อัปเดตปีปฏิทิน พ.ศ. ของเลขที่สัญญาตามปีปฏิทินของวันที่ทำสัญญาโดยอัตโนมัติ
+    contractSignDateInput.addEventListener('change', function() {
+      const comp = parseDateComponents(this.value);
+      if (comp) {
+        contractYearInput.value = comp.yearBE;
+        updateContractNoPreview();
+      }
+      updateAllDatePreviews();
+    });
+
+    // ==========================================
+    // 5. การเชื่อมโยง Event และการคำนวณในฟอร์ม
     // ==========================================
     const salaryInput = document.getElementById('salaryAmount');
     const salaryThaiTextDisplay = document.getElementById('salaryThaiTextDisplay');
@@ -1022,12 +1193,27 @@
         salaryThaiTextDisplay.textContent = '(รอระบุตัวเลขค่าตอบแทน)';
         return;
       }
-      const numFormatted = Number(val).toLocaleString('th-TH');
+      const numFormatted = toThaiDigits(Number(val).toLocaleString('th-TH'));
       const words = numberToThaiBahtText(val);
       salaryThaiTextDisplay.textContent = `${numFormatted} บาท (${words})`;
     }
 
     salaryInput.addEventListener('input', updateSalaryTextPreview);
+
+    // ซิงค์ตำแหน่งพนักงานราชการในส่วนที่ 2 ไปยังช่องตำแหน่งใต้ลายมือชื่อพนักงานราชการในส่วนที่ 3 อัตโนมัติ (แต่แก้ไขเองได้)
+    const positionTitleInput = document.getElementById('positionTitle');
+    const empSignPositionInput = document.getElementById('empSignPosition');
+    let empSignPosManuallyEdited = false;
+
+    empSignPositionInput.addEventListener('input', function() {
+      empSignPosManuallyEdited = this.value.trim().length > 0;
+    });
+
+    positionTitleInput.addEventListener('input', function() {
+      if (!empSignPosManuallyEdited) {
+        empSignPositionInput.value = this.value.trim() ? `ตำแหน่ง ${this.value.trim()}` : '';
+      }
+    });
 
     // National ID auto-format
     const nationalIdInput = document.getElementById('nationalId');
@@ -1053,12 +1239,25 @@
       }
     });
 
-    // Update Thai Date Previews and Auto-calculate New End Date when Duration or New Start Date changes
+    function updateDurationDisplay() {
+      const startVal = document.getElementById('newStartDate').value;
+      const endVal = document.getElementById('newEndDate').value;
+      const box = document.getElementById('calculatedDurationBox');
+      const dur = calculateContractDuration(startVal, endVal);
+
+      if (!dur.valid) {
+        box.textContent = 'รอเลือกวันเริ่มและวันสิ้นสุดที่ถูกต้อง';
+        return;
+      }
+
+      const yThai = toThaiDigits(dur.years);
+      const mThai = dur.months > 0 ? toThaiDigits(dur.months) : '-';
+      box.textContent = `กำหนด ${yThai} ปี ${mThai} เดือน`;
+    }
+
     function updateAllDatePreviews() {
       const pairs = [
         ['birthDate', 'birthDateThaiPreview'],
-        ['oldStartDate', 'oldStartThaiPreview'],
-        ['oldEndDate', 'oldEndThaiPreview'],
         ['contractSignDate', 'signDateThaiPreview'],
         ['newStartDate', 'newStartThaiPreview'],
         ['newEndDate', 'newEndThaiPreview']
@@ -1068,36 +1267,33 @@
         document.getElementById(previewId).textContent =
           'รูปแบบราชการ: ' + (val ? formatOfficialThaiDate(val) : '-');
       });
+      updateDurationDisplay();
     }
 
-    function autoCalculateNewEndDate() {
-      const startVal = document.getElementById('newStartDate').value;
-      const durationYears = parseInt(document.getElementById('renewalDurationYears').value, 10);
-      if (!startVal || isNaN(durationYears)) return;
+    document.getElementById('newStartDate').addEventListener('change', updateAllDatePreviews);
+    document.getElementById('newEndDate').addEventListener('change', updateAllDatePreviews);
 
-      const d = new Date(startVal + 'T00:00:00');
-      if (isNaN(d.getTime())) return;
-      d.setFullYear(d.getFullYear() + durationYears);
-      d.setDate(d.getDate() - 1);
-
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth() + 1).padStart(2, '0');
-      const dd = String(d.getDate()).padStart(2, '0');
-      document.getElementById('newEndDate').value = `${yyyy}-${mm}-${dd}`;
-      updateAllDatePreviews();
-    }
-
-    ['oldStartDate', 'oldEndDate', 'contractSignDate', 'newEndDate'].forEach(id => {
-      document.getElementById(id).addEventListener('change', updateAllDatePreviews);
-    });
-
-    document.getElementById('newStartDate').addEventListener('change', function() {
-      autoCalculateNewEndDate();
-      updateAllDatePreviews();
-    });
-
-    document.getElementById('renewalDurationYears').addEventListener('change', function() {
-      autoCalculateNewEndDate();
+    // ปุ่มตั้งค่าระยะเวลาด่วน (1 ปี, 2 ปี, 4 ปี) คำนวณวันสิ้นสุดจากวันเริ่มให้อัตโนมัติ
+    document.querySelectorAll('.preset-duration-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const years = parseInt(this.getAttribute('data-preset-years'), 10);
+        let startVal = document.getElementById('newStartDate').value;
+        if (!startVal) {
+          const todayIso = new Date().toISOString().slice(0, 10);
+          document.getElementById('newStartDate').value = todayIso;
+          startVal = todayIso;
+        }
+        const d = new Date(startVal + 'T00:00:00');
+        if (!isNaN(d.getTime())) {
+          d.setFullYear(d.getFullYear() + years);
+          d.setDate(d.getDate() - 1);
+          const yyyy = d.getFullYear();
+          const mm = String(d.getMonth() + 1).padStart(2, '0');
+          const dd = String(d.getDate()).padStart(2, '0');
+          document.getElementById('newEndDate').value = `${yyyy}-${mm}-${dd}`;
+          updateAllDatePreviews();
+        }
+      });
     });
 
     // Clear aria-invalid on input
@@ -1107,12 +1303,14 @@
     });
 
     // ==========================================
-    // 4. ปุ่ม "กรอกข้อมูลตัวอย่าง" (Fill Sample Data)
+    // 6. ปุ่ม "กรอกข้อมูลตัวอย่าง" (Fill Sample Data)
     // ==========================================
     let isSampleDataActive = false;
 
     function fillSampleData() {
       isSampleDataActive = true;
+      empSignPosManuallyEdited = true;
+
       document.getElementById('prefix').value = 'นางสาว';
       document.getElementById('fullName').value = 'กานต์พิชชา พัฒนากุล';
       document.getElementById('nationalId').value = '1-1005-01284-59-2';
@@ -1134,33 +1332,32 @@
       document.getElementById('empType').value = 'ทั่วไป';
       document.getElementById('jobGroup').value = 'บริหารทั่วไป';
       document.getElementById('positionTitle').value = 'นักทรัพยากรบุคคล';
-      document.getElementById('positionNumber').value = '1024';
       document.getElementById('salaryAmount').value = '18000';
+
+      document.getElementById('contractSeqNo').value = '068';
+      document.getElementById('contractCalendarYear').value = '2568';
+      document.getElementById('contractSignDate').value = '2025-01-01';
+      document.getElementById('newStartDate').value = '2024-10-01';
+      document.getElementById('newEndDate').value = '2028-09-30';
 
       document.getElementById('oldContractNo').value = '142/2563';
       document.getElementById('oldStartDate').value = '2020-10-01';
       document.getElementById('oldEndDate').value = '2024-09-30';
-      document.getElementById('newContractNo').value = '068/2567';
-      document.getElementById('contractSignDate').value = '2024-10-01';
-      document.getElementById('renewalDurationYears').value = '4';
-      document.getElementById('newStartDate').value = '2024-10-01';
-      document.getElementById('newEndDate').value = '2028-09-30';
 
       document.getElementById('authorityName').value = 'นายโชคชัย วิเชียรชัยยะ';
       document.getElementById('authorityPosition').value = 'อธิบดีกรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ';
+      document.getElementById('empSignPosition').value = 'ตำแหน่ง นักทรัพยากรบุคคล';
       document.getElementById('witness1Name').value = 'นางสาวศิริพร วงศ์สวัสดิ์';
       document.getElementById('witness1Position').value = 'นักทรัพยากรบุคคลชำนาญการพิเศษ';
       document.getElementById('witness2Name').value = 'นายพงศ์พัฒน์ เกียรติเจริญ';
       document.getElementById('witness2Position').value = 'ผู้อำนวยการกลุ่มบริหารทรัพยากรบุคคล';
 
-      document.getElementById('useThaiNumerals').checked = true;
-
-      // Clear validation errors if any
       document.getElementById('validationBanner').classList.add('hidden');
       document.querySelectorAll('#contractForm [aria-invalid="true"]').forEach(el => {
         el.setAttribute('aria-invalid', 'false');
       });
 
+      updateContractNoPreview();
       updateSalaryTextPreview();
       updateAllDatePreviews();
       populateContractPreview();
@@ -1174,9 +1371,13 @@
 
     document.getElementById('btnResetForm').addEventListener('click', function() {
       isSampleDataActive = false;
+      empSignPosManuallyEdited = false;
       document.getElementById('contractForm').reset();
+      document.getElementById('contractSeqNo').value = '001';
+      document.getElementById('contractCalendarYear').value = currentYearBE;
       document.getElementById('validationBanner').classList.add('hidden');
       document.getElementById('sampleBadgeInPreview').classList.add('hidden');
+      updateContractNoPreview();
       updateSalaryTextPreview();
       updateAllDatePreviews();
       document.getElementById('statusDot').className = 'w-2.5 h-2.5 rounded-full bg-slate-400';
@@ -1184,7 +1385,6 @@
       switchView('form');
     });
 
-    // If user edits any field manually after sample data, mark as edited
     document.getElementById('contractForm').addEventListener('input', function() {
       if (isSampleDataActive) {
         isSampleDataActive = false;
@@ -1195,7 +1395,7 @@
     });
 
     // ==========================================
-    // 5. การตรวจสอบความถูกต้องของข้อมูล (Validation) และการสร้างเอกสาร A4
+    // 7. การตรวจสอบความถูกต้องของข้อมูล (Validation) และการสร้างเอกสาร A4
     // ==========================================
     function validateForm() {
       const requiredFields = [
@@ -1213,21 +1413,21 @@
         { id: 'addrZip', label: 'รหัสไปรษณีย์' },
         { id: 'departmentName', label: 'ชื่อหน่วยงาน/ส่วนราชการ' },
         { id: 'divisionName', label: 'กอง/สำนัก/กลุ่ม' },
-        { id: 'jobGroup', label: 'กลุ่มงาน' },
-        { id: 'positionTitle', label: 'ตำแหน่ง' },
-        { id: 'positionNumber', label: 'เลขที่ตำแหน่ง' },
+        { id: 'jobGroup', label: 'กลุ่มงาน/ลักษณะงาน' },
+        { id: 'positionTitle', label: 'ตำแหน่งพนักงานราชการ' },
         { id: 'salaryAmount', label: 'อัตราค่าตอบแทน (บาท)' },
-        { id: 'oldContractNo', label: 'สัญญาจ้างเดิมเลขที่' },
-        { id: 'oldStartDate', label: 'วันที่เริ่มสัญญาเดิม' },
-        { id: 'oldEndDate', label: 'วันที่สิ้นสุดสัญญาเดิม' },
-        { id: 'newContractNo', label: 'สัญญาจ้างใหม่เลขที่' },
+        { id: 'contractSeqNo', label: 'ลำดับเลขที่สัญญา' },
+        { id: 'contractCalendarYear', label: 'ปีปฏิทิน พ.ศ. ของเลขที่สัญญา' },
         { id: 'contractSignDate', label: 'วันที่ทำสัญญาฉบับนี้' },
-        { id: 'newStartDate', label: 'วันที่เริ่มต้นสัญญาใหม่' },
-        { id: 'newEndDate', label: 'วันที่สิ้นสุดสัญญาใหม่' },
-        { id: 'authorityName', label: 'ชื่อผู้มีอำนาจลงนาม' },
-        { id: 'authorityPosition', label: 'ตำแหน่งผู้มีอำนาจลงนาม' },
+        { id: 'newStartDate', label: 'เริ่มตั้งแต่วันที่' },
+        { id: 'newEndDate', label: 'และสิ้นสุดในวันที่' },
+        { id: 'authorityName', label: 'ชื่อผู้ว่าจ้าง (ผู้มีอำนาจลงนาม)' },
+        { id: 'authorityPosition', label: 'ตำแหน่งผู้ว่าจ้าง' },
+        { id: 'empSignPosition', label: 'ตำแหน่งพนักงานราชการ (ใต้ช่องลงนาม)' },
         { id: 'witness1Name', label: 'ชื่อพยานคนที่ 1' },
-        { id: 'witness2Name', label: 'ชื่อพยานคนที่ 2' }
+        { id: 'witness1Position', label: 'ตำแหน่งพยานคนที่ 1' },
+        { id: 'witness2Name', label: 'ชื่อพยานคนที่ 2' },
+        { id: 'witness2Position', label: 'ตำแหน่งพยานคนที่ 2' }
       ];
 
       const errors = [];
@@ -1242,11 +1442,17 @@
         }
       });
 
-      // Check 13 digits on National ID
       const natDigits = document.getElementById('nationalId').value.replace(/\D/g, '');
       if (natDigits.length > 0 && natDigits.length !== 13) {
         errors.push('เลขบัตรประชาชนต้องมีตัวเลขครบ 13 หลัก');
         document.getElementById('nationalId').setAttribute('aria-invalid', 'true');
+      }
+
+      const startVal = document.getElementById('newStartDate').value;
+      const endVal = document.getElementById('newEndDate').value;
+      if (startVal && endVal && new Date(endVal) < new Date(startVal)) {
+        errors.push('วันที่สิ้นสุดสัญญาต้องไม่น้อยกว่าวันที่เริ่มต้นสัญญา');
+        document.getElementById('newEndDate').setAttribute('aria-invalid', 'true');
       }
 
       const banner = document.getElementById('validationBanner');
@@ -1264,10 +1470,9 @@
     }
 
     function populateContractPreview() {
-      const useThaiNum = document.getElementById('useThaiNumerals').checked;
-      const fmt = (val) => applyNumeralPreference(val || '-');
+      const fmtThai = (val) => toThaiDigits(val || '-');
 
-      const prefix = document.getElementById('prefix').value;
+      const prefix = document.getElementById('prefix').value.trim();
       const fullName = document.getElementById('fullName').value.trim();
       const fullPersonName = `${prefix}${fullName}`.trim() || '.......................................................';
 
@@ -1288,126 +1493,117 @@
       const empType = document.getElementById('empType').value;
       const jobGroup = document.getElementById('jobGroup').value || '-';
       const positionTitle = document.getElementById('positionTitle').value || '-';
-      const positionNumber = document.getElementById('positionNumber').value || '-';
       const salaryRaw = document.getElementById('salaryAmount').value || '0';
       const salaryFormatted = Number(salaryRaw).toLocaleString('th-TH');
       const salaryWords = numberToThaiBahtText(salaryRaw) || '-';
 
-      const oldContractNo = document.getElementById('oldContractNo').value || '-';
-      const oldStartDate = document.getElementById('oldStartDate').value;
-      const oldEndDate = document.getElementById('oldEndDate').value;
-      const newContractNo = document.getElementById('newContractNo').value || '........./2567';
+      const contractNoThai = getFormattedContractNoThai();
       const signDate = document.getElementById('contractSignDate').value;
-      const durationYears = document.getElementById('renewalDurationYears').value || '4';
       const newStartDate = document.getElementById('newStartDate').value;
       const newEndDate = document.getElementById('newEndDate').value;
 
       const authorityName = document.getElementById('authorityName').value || '...............................................';
       const authorityPosition = document.getElementById('authorityPosition').value || 'อธิบดีกรมส่งเสริมและพัฒนาคุณภาพชีวิตคนพิการ';
+      const empSignPosition = document.getElementById('empSignPosition').value || `ตำแหน่ง ${positionTitle}`;
       const witness1Name = document.getElementById('witness1Name').value || '...............................................';
       const witness1Position = document.getElementById('witness1Position').value || '';
       const witness2Name = document.getElementById('witness2Name').value || '...............................................';
       const witness2Position = document.getElementById('witness2Position').value || 'ผู้อำนวยการกลุ่มบริหารทรัพยากรบุคคล';
 
-      // Set Contract Header & Preamble
-      document.getElementById('docContractNo').textContent = fmt(newContractNo);
-      document.getElementById('docHeaderDept').textContent = deptName;
-      document.getElementById('docMadeAtDept').textContent = deptName;
-      document.getElementById('docSignDate').textContent = formatOfficialThaiDate(signDate, useThaiNum);
-      document.getElementById('docEmployerDept').textContent = deptName;
-      document.getElementById('docAuthorityName').textContent = authorityName;
-      document.getElementById('docAuthorityPos').textContent = authorityPosition;
+      // Set Contract Header & Preamble (ทุกตัวเลขแปลงเป็นเลขไทยทั้งหมด)
+      document.getElementById('docContractNo').textContent = contractNoThai;
+      document.getElementById('docHeaderDept').textContent = fmtThai(deptName);
+      document.getElementById('docMadeAtDept').textContent = fmtThai(deptName);
+      document.getElementById('docSignDate').textContent = formatOfficialThaiDate(signDate);
+      document.getElementById('docEmployerDept').textContent = fmtThai(deptName);
+      document.getElementById('docAuthorityName').textContent = fmtThai(authorityName);
+      document.getElementById('docAuthorityPos').textContent = fmtThai(authorityPosition);
 
-      document.getElementById('docEmpFullName').textContent = fullPersonName;
-      document.getElementById('docEmpAge').textContent = fmt(ageYears);
-      document.getElementById('docEmpNatId').textContent = fmt(nationalId);
-      document.getElementById('docAddrNo').textContent = fmt(addrNo);
-      document.getElementById('docAddrRoad').textContent = fmt(addrRoad);
-      document.getElementById('docAddrSoi').textContent = fmt(addrSoi);
-      document.getElementById('docAddrSubdistrict').textContent = addrSubdistrict;
-      document.getElementById('docAddrDistrict').textContent = addrDistrict;
-      document.getElementById('docAddrProvince').textContent = addrProvince;
-      document.getElementById('docAddrZip').textContent = fmt(addrZip);
-      document.getElementById('docEmpPhone').textContent = fmt(phone);
+      document.getElementById('docEmpFullName').textContent = fmtThai(fullPersonName);
+      document.getElementById('docEmpAge').textContent = fmtThai(ageYears);
+      document.getElementById('docEmpNatId').textContent = fmtThai(nationalId);
+      document.getElementById('docAddrNo').textContent = fmtThai(addrNo);
+      document.getElementById('docAddrRoad').textContent = fmtThai(addrRoad);
+      document.getElementById('docAddrSoi').textContent = fmtThai(addrSoi);
+      document.getElementById('docAddrSubdistrict').textContent = fmtThai(addrSubdistrict);
+      document.getElementById('docAddrDistrict').textContent = fmtThai(addrDistrict);
+      document.getElementById('docAddrProvince').textContent = fmtThai(addrProvince);
+      document.getElementById('docAddrZip').textContent = fmtThai(addrZip);
+      document.getElementById('docEmpPhone').textContent = fmtThai(phone);
 
-      // Clause 1: Employee Type & Position
+      // ข้อ ๑: ประเภทพนักงานราชการ กลุ่มงาน และตำแหน่ง (ไม่มีเลขที่ตำแหน่ง)
       if (empType === 'พิเศษ') {
         document.getElementById('chkSpecial').textContent = '✓';
         document.getElementById('chkGeneral').textContent = '';
-        document.getElementById('docSpecialTrait').textContent = jobGroup;
+        document.getElementById('docSpecialTrait').textContent = fmtThai(jobGroup);
         document.getElementById('docJobGroup').textContent = '-';
         document.getElementById('chkAnnexBSpecNormal').textContent = '✓';
         document.getElementById('chkAnnexBGenNormal').textContent = '';
         document.getElementById('annexASpecialText').textContent =
-          `ปฏิบัติงานในตำแหน่ง ${positionTitle} กลุ่มงาน${jobGroup} สังกัด${divisionName}`;
+          fmtThai(`ปฏิบัติงานในตำแหน่ง ${positionTitle} ลักษณะงาน${jobGroup} สังกัด${divisionName}`);
       } else {
         document.getElementById('chkSpecial').textContent = '';
         document.getElementById('chkGeneral').textContent = '✓';
         document.getElementById('docSpecialTrait').textContent = '-';
-        document.getElementById('docJobGroup').textContent = jobGroup;
+        document.getElementById('docJobGroup').textContent = fmtThai(jobGroup);
         document.getElementById('chkAnnexBSpecNormal').textContent = '';
         document.getElementById('chkAnnexBGenNormal').textContent = '✓';
         document.getElementById('annexASpecialText').textContent = '- ไม่มี -';
       }
 
-      document.getElementById('docPositionTitle').textContent = positionTitle;
-      document.getElementById('docPositionNo').textContent = fmt(positionNumber);
-      document.getElementById('docDivisionName').textContent = divisionName;
+      document.getElementById('docPositionTitle').textContent = fmtThai(positionTitle);
 
-      // Annex A fields
-      document.getElementById('annexAPosition').textContent = positionTitle;
-      document.getElementById('annexAGroup').textContent = jobGroup;
-      document.getElementById('annexADivision').textContent = divisionName;
+      // ผนวก ก.
+      document.getElementById('annexAPosition').textContent = fmtThai(positionTitle);
+      document.getElementById('annexAGroup').textContent = fmtThai(jobGroup);
+      document.getElementById('annexADivision').textContent = fmtThai(divisionName);
 
-      // Clause 3: Dates & Duration
-      document.getElementById('docDurationYears').textContent = fmt(durationYears);
-      document.getElementById('docDurationMonths').textContent = '-';
+      // ข้อ ๓: คำนวณจำนวนปีและเดือนอัตโนมัติจากวันเริ่มและวันสิ้นสุด
+      const dur = calculateContractDuration(newStartDate, newEndDate);
+      document.getElementById('docDurationYears').textContent = dur.valid ? toThaiDigits(dur.years) : '-';
+      document.getElementById('docDurationMonths').textContent =
+        (dur.valid && dur.months > 0) ? toThaiDigits(dur.months) : '-';
 
       const startComp = parseDateComponents(newStartDate);
       const endComp = parseDateComponents(newEndDate);
 
-      document.getElementById('docNewStartDay').textContent = startComp ? fmt(startComp.day) : '......';
+      document.getElementById('docNewStartDay').textContent = startComp ? toThaiDigits(startComp.day) : '......';
       document.getElementById('docNewStartMonth').textContent = startComp ? startComp.monthName : '....................';
-      document.getElementById('docNewStartYear').textContent = startComp ? fmt(startComp.yearBE) : '..........';
+      document.getElementById('docNewStartYear').textContent = startComp ? toThaiDigits(startComp.yearBE) : '..........';
 
-      document.getElementById('docNewEndDay').textContent = endComp ? fmt(endComp.day) : '......';
+      document.getElementById('docNewEndDay').textContent = endComp ? toThaiDigits(endComp.day) : '......';
       document.getElementById('docNewEndMonth').textContent = endComp ? endComp.monthName : '....................';
-      document.getElementById('docNewEndYear').textContent = endComp ? fmt(endComp.yearBE) : '..........';
+      document.getElementById('docNewEndYear').textContent = endComp ? toThaiDigits(endComp.yearBE) : '..........';
 
-      document.getElementById('docOldContractRef').textContent =
-        fmt(`(ต่อเนื่องจากสัญญาจ้างเดิมเลขที่ ${oldContractNo} ตั้งแต่วันที่ ${formatOfficialThaiDate(oldStartDate, false)} ถึงวันที่ ${formatOfficialThaiDate(oldEndDate, false)})`);
-
-      // Clause 4: Salary
-      document.getElementById('docSalaryNumber').textContent = fmt(salaryFormatted);
+      // ข้อ ๔: อัตราค่าตอบแทน
+      document.getElementById('docSalaryNumber').textContent = toThaiDigits(salaryFormatted);
       document.getElementById('docSalaryWords').textContent = salaryWords;
 
-      // Signatures
-      document.getElementById('sigAuthorityName').textContent = authorityName;
-      document.getElementById('sigAuthorityPos').textContent = authorityPosition;
-      document.getElementById('sigEmpName').textContent = fullPersonName;
-      document.getElementById('sigEmpPos').textContent = `ตำแหน่ง ${positionTitle}`;
-      document.getElementById('sigWitness1Name').textContent = witness1Name;
-      document.getElementById('sigWitness1Pos').textContent = witness1Position;
-      document.getElementById('sigWitness2Name').textContent = witness2Name;
-      document.getElementById('sigWitness2Pos').textContent = witness2Position;
-
-      // Convert static clause numbers according to Thai Numeral preference
-      document.querySelectorAll('.num-token').forEach(el => {
-        const base = el.getAttribute('data-arabic') || el.textContent;
-        el.setAttribute('data-arabic', base);
-        el.textContent = useThaiNum ? toThaiDigits(base) : base;
-      });
+      // ช่องลงลายมือชื่อและตำแหน่งทั้ง 4 ฝ่าย (แปลงตัวเลขในตำแหน่งเป็นเลขไทยด้วยถ้ามี)
+      document.getElementById('sigAuthorityName').textContent = fmtThai(authorityName);
+      document.getElementById('sigAuthorityPos').textContent = fmtThai(authorityPosition);
+      document.getElementById('sigEmpName').textContent = fmtThai(fullPersonName);
+      document.getElementById('sigEmpPos').textContent = fmtThai(empSignPosition);
+      document.getElementById('sigWitness1Name').textContent = fmtThai(witness1Name);
+      document.getElementById('sigWitness1Pos').textContent = fmtThai(witness1Position);
+      document.getElementById('sigWitness2Name').textContent = fmtThai(witness2Name);
+      document.getElementById('sigWitness2Pos').textContent = fmtThai(witness2Position);
 
       // Summary Cards above A4 preview
-      document.getElementById('summaryEmployee').textContent = `${fullPersonName} (เลขตำแหน่ง ${positionNumber})`;
-      document.getElementById('summaryPosition').textContent = `ตำแหน่ง${positionTitle} | กลุ่มงาน${jobGroup} (${divisionName})`;
-      document.getElementById('summaryOldContract').textContent = `สัญญาเดิมเลขที่ ${oldContractNo}`;
-      document.getElementById('summaryOldPeriod').textContent =
-        `${formatOfficialThaiDate(oldStartDate)} - ${formatOfficialThaiDate(oldEndDate)}`;
+      document.getElementById('summaryEmployee').textContent = fmtThai(fullPersonName);
+      document.getElementById('summaryPosition').textContent =
+        fmtThai(`ตำแหน่ง ${positionTitle} | กลุ่มงาน${jobGroup} (${divisionName})`);
+      const durText = dur.valid
+        ? `${toThaiDigits(dur.years)} ปี ${dur.months > 0 ? toThaiDigits(dur.months) + ' เดือน' : ''}`
+        : '-';
       document.getElementById('summaryNewContract').textContent =
-        `สัญญาใหม่เลขที่ ${newContractNo} (ระยะเวลา ${durationYears} ปี)`;
+        `สัญญาเลขที่ ${contractNoThai} (กำหนด ${durText})`;
+      document.getElementById('summaryPeriod').textContent =
+        `${formatOfficialThaiDate(newStartDate)} ถึง ${formatOfficialThaiDate(newEndDate)}`;
       document.getElementById('summarySalary').textContent =
-        `${salaryFormatted} บาท/เดือน (${salaryWords})`;
+        `${toThaiDigits(salaryFormatted)} บาท/เดือน (${salaryWords})`;
+      document.getElementById('summarySignatories').textContent =
+        fmtThai(`ผู้ว่าจ้าง: ${authorityName} | พยาน ๒ คน`);
     }
 
     // View switching
@@ -1449,30 +1645,12 @@
 
     document.getElementById('btnBackToEdit').addEventListener('click', () => switchView('form'));
 
-    document.getElementById('useThaiNumerals').addEventListener('change', () => {
-      populateContractPreview();
-    });
-
     document.getElementById('btnPrintDoc').addEventListener('click', function() {
       window.print();
     });
 
-    const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyDW0xl948ds4pLCApTPPhYyF13pAqHMXOqta-4mw2ytz6TKVmj6URZ6DPkFfel2NoH/exec";
-async function saveContractToGoogleSheet(payload) {
-  try {
-    const response = await fetch(GAS_WEB_APP_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "text/plain;charset=utf-8" // ใช้ text/plain เพื่อหลีกเลี่ยง CORS Preflight บน GAS
-      },
-      body: JSON.stringify(payload)
-    });
-    const result = await response.json();
-    console.log("บันทึกลง Google Sheet สำเร็จ:", result);
-  } catch (error) {
-    console.error("เกิดข้อผิดพลาดในการส่งข้อมูลไป GAS:", error);
-  }
-}
+    // Initialize default previews
+    updateContractNoPreview();
   </script>
 </body>
 </html>
